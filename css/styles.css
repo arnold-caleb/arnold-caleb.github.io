@@ -1,0 +1,572 @@
+
+
+:root{
+  --ink:#333366;
+  --ink2:#0c0c2e;
+  --accent:#7a7ac4;
+  --paper:#fcfaf5;
+  --rule: #cfd0ff;
+}
+html{scroll-behavior:smooth;}
+body{
+  background-color: var(--paper);
+  font-family: 'Consolas','Courier New',Consolas,monospace;
+  margin:40px 60px;
+  display:flex; flex-direction:row; align-items:flex-start; justify-content:center;
+  max-width:100%; font-size:15.5px; line-height:1.3;
+  position: relative;
+  overflow-x: hidden;
+}
+.container{ display:flex; flex-direction:row; align-items:flex-start; gap:40px; max-width:1100px; width:100%; }
+/* ── Sticky left rail */
+.side-content{
+  width:290px; flex:0 0 290px;
+  position:sticky; top:24px;
+  align-self:flex-start;
+}
+.pfp{
+  display:block; width:100%; margin:0 0 14px 0; border-radius:14px;
+  border: 3px solid rgba(255,255,255,0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  /* Create the glass refraction effect */
+  filter: 
+    contrast(1.15) 
+    saturate(1.3) 
+    brightness(1.1)
+    drop-shadow(0 0 8px rgba(122,122,196,0.3));
+  box-shadow: 
+    0 8px 30px rgba(0,0,0,0.08), 
+    inset 0 2px 0 rgba(255,255,255,0.8),
+    inset 0 -2px 0 rgba(255,255,255,0.3);
+  background: 
+    linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 100%),
+    rgba(255,255,255,0.25);
+}
+
+/* Profile picture hover effects */
+.pfp:hover{
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 12px 40px rgba(0,0,0,0.15), 
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(255,255,255,0.3);
+  background: 
+    linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.2) 100%),
+    rgba(255,255,255,0.25);
+}
+
+/* Glass refraction effect with distorted edge reflections */
+.pfp::before{
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: 14px;
+  /* Create edge refraction zones that distort the image */
+  background: 
+    /* Top-left edge refraction */
+    radial-gradient(ellipse 60px 30px at 10% 10%, 
+      rgba(255,255,255,0.3) 0%, 
+      rgba(255,255,255,0.1) 40%, 
+      transparent 70%),
+    /* Top-right edge refraction */
+    radial-gradient(ellipse 60px 30px at 90% 10%, 
+      rgba(255,255,255,0.3) 0%, 
+      rgba(255,255,255,0.1) 40%, 
+      transparent 70%),
+    /* Bottom-left edge refraction */
+    radial-gradient(ellipse 60px 30px at 10% 90%, 
+      rgba(255,255,255,0.3) 0%, 
+      rgba(255,255,255,0.1) 40%, 
+      transparent 70%),
+    /* Bottom-right edge refraction */
+    radial-gradient(ellipse 60px 30px at 90% 90%, 
+      rgba(255,255,255,0.3) 0%, 
+      rgba(255,255,255,0.1) 40%, 
+      transparent 70%),
+    /* Moving highlight */
+    radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+      rgba(255,255,255,0.2), transparent 60%);
+  /* Create lens distortion effect */
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 2;
+  /* Create actual image refraction by distorting the edges */
+  clip-path: polygon(
+    0% 0%, 
+    100% 0%, 
+    100% 100%, 
+    0% 100%
+  );
+}
+
+/* Glass edge refraction with image distortion */
+.pfp::after{
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: 14px;
+  /* Create edge refraction zones */
+  background: 
+    /* Top-left corner refraction */
+    radial-gradient(ellipse 40px 40px at 15% 15%, 
+      rgba(255,255,255,0.2) 0%, 
+      rgba(255,255,255,0.1) 30%, 
+      transparent 60%),
+    /* Bottom-right corner refraction */
+    radial-gradient(ellipse 40px 40px at 85% 85%, 
+      rgba(255,255,255,0.2) 0%, 
+      rgba(255,255,255,0.1) 30%, 
+      transparent 60%),
+    /* Edge highlights */
+    linear-gradient(135deg, 
+      rgba(255,255,255,0.4) 0%, 
+      rgba(255,255,255,0.1) 20%, 
+      transparent 35%, 
+      transparent 65%, 
+      rgba(255,255,255,0.1) 80%, 
+      rgba(255,255,255,0.4) 100%);
+  /* Enhanced refraction filters */
+  backdrop-filter: blur(2px) saturate(120%) contrast(1.1);
+  -webkit-backdrop-filter: blur(2px) saturate(120%) contrast(1.1);
+  pointer-events: none;
+  z-index: 1;
+}
+.text-background{
+  background:#f5f5f5; padding:6px 8px; border-radius:10px; display:inline;
+  margin:8px 0; box-shadow:1px 1px 25px 1px rgba(0,0,0,.02);
+}
+.note{ font-size:13px; opacity:.85; }
+.pill{
+  font-size:12.5px; padding:2px 8px; border-radius:999px; background:#ecebff; color:var(--ink);
+  margin:4px 6px 0 0; display:inline-block; white-space:nowrap;
+  transition:transform .15s ease;
+}
+.pill:hover{ transform:translateY(-1px); }
+
+/* ── Content column */
+.content{ flex:1 1 auto; border-left:1px solid #ccc; padding-left:20px; }
+h1,h2,h3,h4{ color:var(--ink); margin:0 0 6px 0; }
+.paragraph{ color:var(--ink2); margin:8px 0;}
+#focus .paragraph{ text-align:justify;text-justify:inter-word;}
+.arnold,.sub-proj-link{ color:var(--ink); text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; text-decoration-thickness:1px; }
+.sub-head{ color:var(--ink); font-size:20px; opacity:.95; margin:4px 0 6px; }
+.sub-proj{ color:#0a0a6d; text-decoration:none; font-weight:500; }
+.sub-proj-authors{ color:var(--ink); font-size:14.5px; text-decoration:none; }
+.sub-proj-proj{ color:#37378f; font-size:15.5px; text-decoration:none; }
+.link{ color:var(--ink); text-decoration:underline; text-decoration-color:var(--accent); font-size:15px; text-underline-offset:4px; text-decoration-thickness:1px; }
+
+/* ── Futuristic rule lines */
+hr{
+  height:1px; border:none; margin:16px 0;
+  background: linear-gradient(90deg, rgba(122,122,196,0.0) 0%, rgba(122,122,196,0.65) 35%, rgba(122,122,196,0.2) 65%, rgba(122,122,196,0.0) 100%);
+  box-shadow: 0 0 12px rgba(122,122,196,0.25);
+}
+
+/* ── Research list */
+.research-project glass{ display:block; margin:10px 0 14px; }
+.badge{ font-size:12.5px; padding:2px 6px; border:1px solid var(--accent); border-radius:8px; margin:2px}
+.section{ scroll-margin-top:90px; } /* anchor comfort */
+
+/* ── Top micro-nav (optional, subtle) */
+.micro-nav{
+  position:sticky; top:-1px; z-index:2; 
+  backdrop-filter:saturate(1.1) blur(8px);
+  -webkit-backdrop-filter:saturate(1.1) blur(8px);
+  background: 
+    linear-gradient(180deg, 
+      rgba(252,250,245,0.0) 0%, 
+      rgba(252,250,245,0.0) 70%, 
+      rgba(252,250,245,0.05) 90%, 
+      rgba(252,250,245,0.1) 100%);
+border-bottom:1px solid rgba(122,122,196,0.1);
+  padding:8px 12px; margin-left:-20px; margin-right:-20px;
+  box-shadow: 
+    0 1px 10px rgba(0,0,0,0.01);
+}
+.micro-nav a{
+  margin-right:14px; font-size:13px; color:var(--ink);
+  text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px;
+}
+.micro-nav a.active{ font-weight:600; }
+
+.badge{
+  display:inline-block; font-size:12px; padding:2px 6px; border:1px solid var(--accent); border-radius:8px; margin: 2px; color:var(--ink);
+  background:linear-gradient(180deg,#fff,#f3f4ff);
+}
+.topic-pill{
+  display:inline-block; font-size:11.5px; padding:2px 8px; border-radius:999px; background:#eef0ff; color:#2c2c7a; margin-right:6px; border:1px solid #dadcff;
+}
+
+/* Copyright box */
+.copyright{
+  font-size:13px; color:#1d1d3f; display:flex; gap:12px; flex-wrap:wrap;
+  background:#f6f7ff; border:1px solid #dfe2ff; padding:12px 14px; border-radius:12px;
+}
+
+/* Responsive */
+@media (max-width:1040px){
+  .container{ flex-direction:column; }
+  .side{ position:relative; top:auto; width:100%; }
+  .content{ border-left:none; padding-left:0; }
+}
+
+/* Reduce neural background intensity on mobile for performance */
+@media (max-width:768px){
+  #neural-canvas{
+    opacity: 0.3;
+  }
+}
+
+/* Disable neural background for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #neural-canvas {
+    display: none;
+  }
+}
+
+/* Neural background canvas */
+#neural-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.1;
+}
+
+/* Smooth theme transitions */
+* { transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease; }
+
+/* Button background var */
+:root { --btn-bg: #ffffff; }
+
+/* Dark theme variables (overrides) */
+body[data-theme="dark"]{
+  --paper:#0f1120;        /* page background */
+  --ink:#e4e6ff;          /* headings/links */
+  --ink2:#cfd2ff;         /* body text */
+  --accent:#9aa0ff;       /* link underline/glow */
+  --rule:#2b2f55;         /* divider tint */
+  --btn-bg:#1a1d35;
+}
+
+/* Global backgrounds/borders that reference your vars */
+body[data-theme="dark"]{
+  background-color: var(--paper);
+}
+
+/* Content column divider */
+body[data-theme="dark"] .content{ border-left:1px solid #2a2e54; }
+
+/* Sticky rail note / pills / topic chips */
+body[data-theme="dark"] .text-background{ background:#181b33; color:var(--ink2); box-shadow:none; }
+body[data-theme="dark"] .pill{
+  background:#1a1d35; color:var(--ink); border:1px solid #2e3470;
+}
+body[data-theme="dark"] .topic-pill{
+  background:#1a1d35; color:#cfd2ff; border:1px solid #2e3470;
+}
+
+/* Paper cards (box feel preserved, darker surface + softer shadow) */
+body[data-theme="dark"] .paper{
+  background:#12142a; box-shadow:0 6px 18px rgba(0,0,0,.35);
+}
+body[data-theme="dark"] .paper .meta{ color:#99a0e6; }
+
+/* Futuristic horizontal rule */
+body[data-theme="dark"] hr{
+  background:linear-gradient(90deg, rgba(154,160,255,0.0) 0%, rgba(154,160,255,0.45) 35%, rgba(154,160,255,0.18) 65%, rgba(154,160,255,0.0) 100%);
+  box-shadow:0 0 12px rgba(154,160,255,.18);
+}
+
+/* Micro-nav background + border in dark */
+body[data-theme="dark"] .micro-nav{
+  background: 
+    linear-gradient(180deg, 
+      rgba(15,17,32,0.4) 0%, 
+      rgba(15,17,32,0.2) 50%, 
+      rgba(15,17,32,0.05) 100%);
+  border-bottom:1px solid rgba(154,160,255,0.15);
+  box-shadow: 
+    0 2px 20px rgba(0,0,0,0.2);
+}
+
+/* Dark theme profile picture */
+body[data-theme="dark"] .pfp{
+  border: 3px solid rgba(255,255,255,0.2);
+  box-shadow: 
+    0 12px 38px rgba(0,0,0,0.45), 
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    inset 0 -1px 0 rgba(255,255,255,0.05);
+  background: 
+    linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%),
+    rgba(18,20,42,0.35);
+}
+
+body[data-theme="dark"] .pfp:hover{
+  box-shadow: 
+    0 16px 48px rgba(0,0,0,0.6), 
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    inset 0 -1px 0 rgba(255,255,255,0.08);
+  background: 
+    linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%),
+    rgba(18,20,42,0.45);
+}
+
+/* Dark theme glass refraction effects */
+body[data-theme="dark"] .pfp::before{
+  background: 
+    radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+      rgba(255,255,255,0.15), transparent 70%),
+    linear-gradient(135deg, 
+      rgba(255,255,255,0.2) 0%, 
+      rgba(255,255,255,0.05) 15%, 
+      transparent 30%, 
+      transparent 70%, 
+      rgba(255,255,255,0.05) 85%, 
+      rgba(255,255,255,0.2) 100%);
+  backdrop-filter: blur(2px) saturate(130%) contrast(1.15) brightness(1.05);
+  -webkit-backdrop-filter: blur(2px) saturate(130%) contrast(1.15) brightness(1.05);
+}
+
+body[data-theme="dark"] .pfp::after{
+  background: 
+    /* Dark theme corner refraction */
+    radial-gradient(ellipse 40px 40px at 15% 15%, 
+      rgba(255,255,255,0.1) 0%, 
+      rgba(255,255,255,0.05) 30%, 
+      transparent 60%),
+    radial-gradient(ellipse 40px 40px at 85% 85%, 
+      rgba(255,255,255,0.1) 0%, 
+      rgba(255,255,255,0.05) 30%, 
+      transparent 60%),
+    linear-gradient(135deg, 
+      rgba(255,255,255,0.2) 0%, 
+      rgba(255,255,255,0.05) 20%, 
+      transparent 35%, 
+      transparent 65%, 
+      rgba(255,255,255,0.05) 80%, 
+      rgba(255,255,255,0.2) 100%);
+  backdrop-filter: blur(1px) saturate(110%) contrast(1.05);
+  -webkit-backdrop-filter: blur(1px) saturate(110%) contrast(1.05);
+}
+
+/* Links inherit var(--ink) already; underline color set by --accent. Good contrast in dark. */
+
+/* Copyright box */
+body[data-theme="dark"] .copyright{
+  background:#12142a; border:1px solid #2e3470; color:var(--ink2);
+}
+
+/* Update the toggle button colors in dark */
+body[data-theme="dark"] #theme-toggle{
+  background: var(--btn-bg); color: var(--ink); border-color:#2e3470;
+}
+
+/* ====== LIGHT THEME baseline (explicit, just to be sure) ====== */
+.sub-proj        { color:#0a0a6d; text-decoration:none; font-weight:600; }
+.sub-proj-authors{ color:var(--ink); opacity:.92; }
+.sub-proj-proj   { color:#37378f; }
+.link            { color:var(--ink); text-decoration:underline; text-decoration-color:var(--accent);
+                  text-underline-offset:3px; text-decoration-thickness:1px; }
+.note            { color:var(--ink2); opacity:.85; }
+
+.badge{ 
+  background:linear-gradient(180deg,#fff,#f3f4ff);
+  border:1px solid var(--accent);
+  color:var(--ink);
+}
+
+/* ====== DARK THEME overrides for better contrast ====== */
+body[data-theme="dark"] .sub-proj{
+  color:#b8bdff; /* brighter, cool blue for titles */
+  text-decoration:none;
+  text-decoration-color:#8e95ff;
+  text-underline-offset:2px;
+  text-decoration-thickness:1px;
+}
+body[data-theme="dark"] .sub-proj:hover{
+  color:#c8ccff;
+  text-decoration-thickness:2px;
+}
+
+body[data-theme="dark"] .sub-proj-authors{
+  color:#d5d8ff; /* near body text but a touch brighter */
+  opacity:.95;
+}
+body[data-theme="dark"] .sub-proj-proj{
+  color:#a5abff; /* venue line */
+}
+
+body[data-theme="dark"] .link{
+  color:#dee0ff;
+  text-decoration-color:#9aa0ff;
+  text-underline-offset:3px;
+  text-decoration-thickness:1.5px; /* thicker for readability */
+}
+body[data-theme="dark"] .link:hover{
+  text-decoration-thickness:2px;
+}
+
+body[data-theme="dark"] .note{
+  color:#aab1ff; opacity:.95; /* more readable than gray */
+}
+
+body[data-theme="dark"] .badge{
+  background:#1a1d35;
+  color:#e6e8ff;
+  border:1px solid #4047a6;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);
+}
+
+/* Dark theme venue citations */
+body[data-theme="dark"] .venue-citation{
+  background:linear-gradient(135deg,#1a1d35,#2a2e54);
+  border:1px solid #9aa0ff;
+  color:#e6e8ff;
+}
+body[data-theme="dark"] .venue-citation:hover{
+  box-shadow:0 2px 8px rgba(154,160,255,0.4);
+}
+
+/* Topic chips & pills already adjusted; ensure hover stays visible */
+body[data-theme="dark"] .pill:hover, 
+body[data-theme="dark"] .topic-pill:hover{
+  box-shadow:0 6px 18px rgba(154,160,255,.18);
+}
+
+/* Futuristic HR already tuned; ensure meta lines stay readable */
+body[data-theme="dark"] .sub-proj-proj,
+body[data-theme="dark"] .sub-proj-authors,
+body[data-theme="dark"] .paper .meta{
+  text-shadow:0 0 0 transparent; /* crisp text rendering */
+}
+
+/* Improve keyboard focus visibility (both themes) */
+a:focus-visible, button:focus-visible{
+  outline:2px solid #9aa0ff; outline-offset:2px; border-radius:6px;
+}
+body[data-theme="dark"] a:focus-visible, 
+body[data-theme="dark"] button:focus-visible{
+  outline:2px solid #c5c9ff;
+}
+
+.glass{
+  position: relative;
+  background: rgba(255,255,255,0.28);
+  border: 1px solid rgba(122,122,196,0.25);
+  border-radius: 14px;
+  padding: 10px 12px;
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.35);
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  cursor: pointer;
+}
+
+/* Add a moving highlight "shine" */
+.glass::before{
+  content: "";
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+              rgba(255,255,255,0.15), transparent 40%);
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+/* Slight lift + brighter when hovered */
+.glass:hover{
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+/* Dark theme adjustment */
+body[data-theme="dark"] .glass{
+  background: rgba(18,20,42,0.35);
+  border: 1px solid rgba(154,160,255,0.28);
+  box-shadow: 0 12px 38px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* ===== Accessibility: reduced transparency fallback ===== */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, body[data-theme="dark"] .glass{
+    /* fall back to solid boxes with good contrast */
+    background: #f3f4ff;
+    border-color: #c9ccff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  body[data-theme="dark"] .glass{
+    background: #1a1d35;
+    border-color: #2e3470;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  }
+}
+
+/* ===== Optional: make other components glassy too ===== */
+/* Micro-nav as glass */
+body .micro-nav{
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  background: linear-gradient(180deg, rgba(252,250,245,0.65), rgba(252,250,245,0.4));
+  border-bottom: 1px solid rgba(122,122,196,0.28);
+}
+body[data-theme="dark"] .micro-nav{
+  background: linear-gradient(180deg, rgba(15,17,32,0.55), rgba(15,17,32,0.35));
+  border-bottom-color: rgba(154,160,255,0.22);
+}
+
+/* Paper cards (optional glass variant) */
+.paper.paper--glass{
+  background: rgba(255,255,255,0.38);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(122,122,196,0.28);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+}
+body[data-theme="dark"] .paper.paper--glass{
+  background: rgba(18,20,42,0.45);
+  border-color: rgba(154,160,255,0.22);
+  box-shadow: 0 14px 42px rgba(0,0,0,0.45);
+}
+
+.dashdot-sep{
+  border:none;
+  height:1px;
+  margin:8px 0;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(122,122,196,0.65) 0px,
+    rgba(122,122,196,0.65) 4px,
+    transparent 4px,
+    transparent 8px,
+    rgba(122,122,196,0.35) 8px,
+    rgba(122,122,196,0.35) 10px,
+    transparent 10px,
+    transparent 16px
+  );
+  background-size:16px 1px;
+}
+body[data-theme="dark"] .dashdot-sep{
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(154,160,255,0.8) 0px,
+    rgba(154,160,255,0.8) 4px,
+    transparent 4px,
+    transparent 8px,
+    rgba(154,160,255,0.4) 8px,
+    rgba(154,160,255,0.4) 10px,
+    transparent 10px,
+    transparent 16px
+  );
+}
