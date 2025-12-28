@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EvoGS: 4D Gaussian Splatting as a Learned Dynamical System - Arnold Caleb Asiimwe, Carl Vondrick">
+  <meta name="keywords" content="EvoGS, Gaussian Splatting, 4D, Neural Rendering, Computer Vision">
+  <meta name="author" content="Arnold Caleb Asiimwe">
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="./assets/profilepic.jpg">
+  <link rel="apple-touch-icon" href="./assets/profilepic.jpg">
+  <title>EvoGS: 4D Gaussian Splatting as a Learned Dynamical System</title>
+
+  <!-- Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "EvoGS: 4D Gaussian Splatting as a Learned Dynamical System",
+    "author": [
+      {
+        "@type": "Person",
+        "name": "Arnold Caleb Asiimwe",
+        "url": "https://cs.princeton.edu/~aa0008/"
+      },
+      {
+        "@type": "Person",
+        "name": "Carl Vondrick",
+        "url": "https://www.cs.columbia.edu/~vondrick/"
+      }
+    ],
+    "datePublished": "2025",
+    "publisher": {
+      "@type": "Organization",
+      "name": "arXiv"
+    },
+    "description": "EvoGS: 4D Gaussian Splatting as a Learned Dynamical System"
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <!-- LEFT: Navigation/Back link -->
+    <aside class="side-content" aria-label="Navigation">
+      <div class="glass note" style="margin-bottom:12px; font-size:14.5px; line-height:1.4;">
+        <a href="index.html" class="navlink" style="display:block; margin-bottom:16px;">← Back to Home</a>
+        
+        <div class="info-row">
+          <span class="label">Project:</span>
+          <span>EvoGS</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Year:</span>
+          <span>2025</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Venue:</span>
+          <span>arXiv preprint</span>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="glass note" style="font-size:14.5px; line-height:1.4;">
+        <h4 class="sub-head" style="margin-top:0;">Links</h4>
+        <div style="margin-top:12px;">
+          <a href="./assets/evogs.pdf" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
+            <img src="./assets/arxiv.svg" alt="arXiv" style="width:14px; height:14px; vertical-align:middle;">
+            Paper
+          </a>
+          <a href="#" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" fill="currentColor"/>
+            </svg>
+            Code
+          </a>
+          <a href="#" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+            Video
+          </a>
+        </div>
+      </div>
+
+      <!-- Acknowledgments -->
+      <div class="acknowledgments-footer">
+        <h4 class="sub-head" style="margin-top:0; margin-bottom:8px;">Acknowledgments</h4>
+        <p style="margin:0; font-size:14.5px; line-height:1.4; color:var(--ink2);">
+          We thank the Columbia Vision Lab for their support and feedback and Prof. Felix Heide for his helpful comments during paper writing.
+        </p>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Main content -->
+    <main class="content">
+      <!-- Project Header -->
+      <section class="section project-header" style="margin-top:0;">
+        <h1 style="font-size:32px; margin:0 0 16px 0; font-weight:600; color:#000000; line-height:1.2;">
+          EvoGS: 4D Gaussian Splatting as a Learned Dynamical System
+        </h1>
+        <div style="margin-bottom:24px;">
+          <div class="info-row" style="margin-bottom:8px;">
+            <a href="index.html" class="sub-proj-link">Arnold Caleb Asiimwe</a><sup>1</sup>,
+            <a href="https://www.cs.columbia.edu/~vondrick/" class="sub-proj-link" target="_blank">Carl Vondrick</a><sup>2</sup>
+          </div>
+          <div class="info-row" style="font-size:14px; color:var(--ink2); margin-top:8px;">
+            <sup>1</sup>Princeton University<br>
+            <sup>2</sup>Columbia University
+          </div>
+        </div>
+
+        <!-- Abstract -->
+        <div style="margin:32px 0;">
+          <h4 class="sub-head">Abstract</h4>
+          <p class="paragraph">
+            We reinterpret 4D Gaussian Splatting as a continuous-time dynamical system, where scene motion arises from integrating 
+            a learned neural dynamical field rather than applying per-frame deformations. This formulation, which we call EvoGS, 
+            treats the Gaussian representation as an evolving physical system whose state evolves continuously under a learned motion 
+            law. This unlocks capabilities absent in deformation-based approaches: (1) sample-efficient learning from sparse temporal 
+            supervision by modeling the underlying motion law; (2) temporal extrapolation enabling forward and backward prediction 
+            beyond observed time ranges; and (3) compositional dynamics that allow localized dynamics injection for controllable scene 
+            synthesis. Experiments on dynamic scene benchmarks show that EvoGS achieves better motion coherence and temporal consistency 
+            compared to deformation-field baselines while maintaining real-time rendering.
+          </p>
+        </div>
+
+        <!-- Teaser/Figure -->
+        <div class="project-figure">
+          <img src="./assets/evogs.png" 
+               alt="EvoGS Teaser Figure">
+          <figcaption>
+            EvoGS learns to model dynamic scenes as continuous evolution functions.
+          </figcaption>
+        </div>
+
+        <!-- Key Contributions -->
+        <div style="margin:32px 0;">
+          <h4 class="sub-head">Key Contributions</h4>
+          <ul class="research-interests" style="margin-top:16px;">
+            <li>Sample-efficient learning from sparse temporal supervision by modeling the underlying motion law</li>
+            <li>Temporal extrapolation enabling forward and backward prediction beyond observed time ranges</li>
+            <li>Compositional dynamics that allow localized dynamics injection for controllable scene synthesis</li>
+          </ul>
+        </div>
+
+        <!-- Method -->
+        <div style="margin:32px 0;">
+          <h4 class="sub-head">Method</h4>
+          <p class="paragraph">
+            EvoGS treats each Gaussian as a particle evolving under a learned continuous-time dynamical system. The model consists of: (1) a 4D feature encoder that produces local embeddings from a factorized space–time representation (e.g., HexPlane), (2) a neural dynamical law predicting instantaneous time derivatives of Gaussian attributes (position, rotation, scale, color, opacity), and (3) a differentiable ODE integrator (RK4) that advances these states in time.
+          </p>
+          <p class="paragraph">
+            The state of each Gaussian evolves according to a continuous-time ODE, where a lightweight MLP predicts the velocity field. This enables both forward and backward temporal propagation, allowing the model to reconstruct motion through missing frames. To stabilize long-term integration, we introduce Gaussian waypoints—sparse anchor snapshots that act as reference states, reducing drift accumulation over long temporal horizons.
+          </p>
+        </div>
+
+        <!-- Results -->
+        <div style="margin:32px 0;">
+          <h4 class="sub-head">Results</h4>
+          <p class="paragraph">
+            We evaluate EvoGS on synthetic (D-NeRF) and real-world (N3DV, Nerfies) dynamic scene datasets, comparing against state-of-the-art methods including HexPlane, K-Planes, 4DGS, and Deformable 3DGS. Our approach demonstrates superior performance in sparse-frame and extrapolation settings, maintaining coherent motion trajectories even when training on every 8th frame.
+          </p>
+          <p class="paragraph">
+            A key advantage of our formulation is controllable dynamics: by representing motion as a continuous velocity field, we can inject, mix, or replace portions of the flow to produce new motion without retraining. This enables localized motion synthesis and compositional scene editing.
+          </p>
+
+          <!-- Sparse Frame Reconstruction -->
+          <div class="project-figure" style="margin-top:32px;">
+            <video controls preload="metadata" style="width:100%; border-radius:8px;">
+              <source src="./assets/sparse_frame_reconstruction.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <figcaption>
+              Sample-efficient learning from sparse temporal supervision.
+            </figcaption>
+          </div>
+
+          <!-- Future Rollout -->
+          <div class="project-figure" style="margin-top:32px;">
+            <video controls preload="metadata" style="width:100%; border-radius:8px;">
+              <source src="./assets/future_rollout.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <figcaption>
+              Temporal extrapolation enabling forward and backward prediction beyond observed time ranges.
+            </figcaption>
+          </div>
+
+          <!-- Dynamics Injection -->
+          <div class="project-figure" style="margin-top:32px;">
+            <video controls preload="metadata" style="width:100%; border-radius:8px;">
+              <source src="./assets/dynamics_injection.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <figcaption>
+              Compositional dynamics that allow localized dynamics injection for controllable scene synthesis.
+            </figcaption>
+          </div>
+        </div>
+
+        <!-- Citation -->
+        <div style="margin:48px 0;">
+          <h4 class="sub-head">Citation</h4>
+          <div class="project-citation" style="margin-top:16px;">
+            <button class="citation-copy-btn" onclick="copyCitation()" aria-label="Copy citation">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/>
+              </svg>
+            </button>
+            <pre id="citation-text">@article{asiimwe2025evogs,
+  title={EvoGS: 4D Gaussian Splatting as a Learned Dynamical System},
+  author={Asiimwe, Arnold Caleb and Vondrick, Carl},
+  journal={arXiv preprint arXiv:2025},
+  year={2025}
+}</pre>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- Floating theme toggle for mobile -->
+  <button id="floating-theme-toggle" class="floating-theme-toggle" type="button" aria-label="Toggle dark mode" style="position:relative; overflow:hidden;">
+    <span class="toggle-knob"></span>
+  </button>
+
+  <script src="js/theme.js"></script>
+  <script src="js/navigation.js"></script>
+  <script>
+    function copyCitation() {
+      const citationText = document.getElementById('citation-text').textContent;
+      const copyBtn = document.querySelector('.citation-copy-btn');
+      
+      navigator.clipboard.writeText(citationText).then(() => {
+        // Visual feedback
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.classList.add('copied');
+        copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg>';
+        
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.innerHTML = originalHTML;
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy citation:', err);
+      });
+    }
+  </script>
+</body>
+</html>
+
