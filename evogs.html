@@ -167,54 +167,156 @@
           </figcaption>
         </div>
 
-        <!-- Interactive 3D Gaussian Splatting Viewer -->
+        <!-- ═══════════════════════════════════════════════════════════════
+             VIEWER 1: Sparse Temporal Reconstruction
+             Contribution (1): Sample-efficient learning from sparse supervision
+             ═══════════════════════════════════════════════════════════════ -->
         <div style="margin:32px 0;">
-          <h4 class="sub-head">Interactive Viewer</h4>
+          <h4 class="sub-head">Sparse Temporal Reconstruction</h4>
           <p class="paragraph" style="margin-bottom:16px;">
-            Explore the 3D Gaussian point cloud below. This is a real scene reconstructed by EvoGS — each Gaussian primitive is rendered in real-time using WebGL. Select a timepoint to see how the scene evolves.
+            EvoGS learns smooth motion from <strong>sparse temporal supervision</strong> — training on only a subset of frames (e.g., every 3rd frame) yet faithfully reconstructing the full continuous evolution. Explore the 3D point cloud at different timepoints.
           </p>
-          <div style="position:relative; width:100%; max-width:1200px; margin:0 auto; overflow:hidden; box-sizing:border-box;">
-            <iframe id="splat-viewer-frame"
-                    src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=t%20%3D%200.00" 
-                    style="width:100%; height:500px; border:1px dashed rgba(0,0,0,0.25); border-radius:8px; background:var(--paper, #ffffff); display:block; box-sizing:border-box;"
+          <div class="viewer-container">
+            <iframe id="sparse-viewer-frame" class="viewer-iframe"
+                    src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Sparse%20t%20%3D%200.00"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
-                    title="Interactive 3D Gaussian Splatting Viewer">
+                    title="Sparse Reconstruction Viewer">
             </iframe>
-
-            <!-- Thumbnail Carousel with Arrows -->
             <div class="carousel-wrapper">
-              <button class="carousel-arrow carousel-arrow-left" id="carousel-left" aria-label="Scroll left">&#8249;</button>
-              <div id="thumb-carousel" style="
-                display:flex; gap:12px; overflow-x:auto; padding:14px 4px 8px;
-                scrollbar-width:thin; scrollbar-color:rgba(0,0,0,0.2) transparent;
-                scroll-behavior:smooth;
-              ">
-                <button class="thumb-card active" data-url="./assets/cut_roasted_beef_t0.splat" data-label="t = 0.00" onclick="switchScene(this)">
+              <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel('sparse-carousel', -160)" aria-label="Scroll left">&#8249;</button>
+              <div id="sparse-carousel" class="viewer-carousel">
+                <button class="thumb-card active" data-url="./assets/cut_roasted_beef_t0.splat" data-label="Sparse  t = 0.00" onclick="switchScene(this, 'sparse-viewer-frame')">
                   <img src="./assets/thumbnails/thumb_t0.jpg" alt="t=0.00">
                   <span class="thumb-label">t = 0.00</span>
                 </button>
-                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t25.splat" data-label="t = 0.25" onclick="switchScene(this)">
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t25.splat" data-label="Sparse  t = 0.25" onclick="switchScene(this, 'sparse-viewer-frame')">
                   <img src="./assets/thumbnails/thumb_t25.jpg" alt="t=0.25">
                   <span class="thumb-label">t = 0.25</span>
                 </button>
-                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t50.splat" data-label="t = 0.50" onclick="switchScene(this)">
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t50.splat" data-label="Sparse  t = 0.50" onclick="switchScene(this, 'sparse-viewer-frame')">
                   <img src="./assets/thumbnails/thumb_t50.jpg" alt="t=0.50">
                   <span class="thumb-label">t = 0.50</span>
                 </button>
-                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t75.splat" data-label="t = 0.75" onclick="switchScene(this)">
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t75.splat" data-label="Sparse  t = 0.75" onclick="switchScene(this, 'sparse-viewer-frame')">
                   <img src="./assets/thumbnails/thumb_t75.jpg" alt="t=0.75">
                   <span class="thumb-label">t = 0.75</span>
                 </button>
               </div>
-              <button class="carousel-arrow carousel-arrow-right" id="carousel-right" aria-label="Scroll right">&#8250;</button>
+              <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel('sparse-carousel', 160)" aria-label="Scroll right">&#8250;</button>
             </div>
           </div>
           <figcaption style="text-align:center; font-size:13px; color:var(--ink2); margin-top:10px;">
-            <em>cut_roasted_beef</em> — 217,102 Gaussian primitives rendered in real-time. Click a frame to switch timepoints.
+            <em>cut_roasted_beef</em> — trained on every 3rd frame, 217K Gaussians rendered in real-time.
+          </figcaption>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             VIEWER 2: Temporal Extrapolation (Future / Past Prediction)
+             Contribution (2): Forward & backward prediction beyond observed frames
+             ═══════════════════════════════════════════════════════════════ -->
+        <div style="margin:32px 0;">
+          <h4 class="sub-head">Temporal Extrapolation</h4>
+          <p class="paragraph" style="margin-bottom:16px;">
+            By learning a continuous velocity field, EvoGS can <strong>predict beyond observed frames</strong>. The model is trained only on the first half of the sequence (t&nbsp;≤&nbsp;0.50) and extrapolates into the unseen future. Compare observed vs. predicted timepoints below.
+          </p>
+          <div class="viewer-container">
+            <iframe id="future-viewer-frame" class="viewer-iframe"
+                    src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Observed%20t%20%3D%200.00"
+                    allow="autoplay; fullscreen; xr-spatial-tracking"
+                    title="Future Prediction Viewer">
+            </iframe>
+            <div class="carousel-wrapper">
+              <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel('future-carousel', -160)" aria-label="Scroll left">&#8249;</button>
+              <div id="future-carousel" class="viewer-carousel">
+                <button class="thumb-card active" data-url="./assets/cut_roasted_beef_t0.splat" data-label="Observed  t = 0.00" onclick="switchScene(this, 'future-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t0.jpg" alt="t=0.00">
+                  <span class="thumb-label">✅ Observed t=0.00</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t25.splat" data-label="Observed  t = 0.25" onclick="switchScene(this, 'future-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t25.jpg" alt="t=0.25">
+                  <span class="thumb-label">✅ Observed t=0.25</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t50.splat" data-label="Predicted  t = 0.50" onclick="switchScene(this, 'future-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t50.jpg" alt="t=0.50">
+                  <span class="thumb-label">🔮 Predicted t=0.50</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t75.splat" data-label="Predicted  t = 0.75" onclick="switchScene(this, 'future-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t75.jpg" alt="t=0.75">
+                  <span class="thumb-label">🔮 Predicted t=0.75</span>
+                </button>
+              </div>
+              <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel('future-carousel', 160)" aria-label="Scroll right">&#8250;</button>
+            </div>
+          </div>
+          <figcaption style="text-align:center; font-size:13px; color:var(--ink2); margin-top:10px;">
+            <em>cut_roasted_beef</em> — trained on t&nbsp;∈&nbsp;[0,&nbsp;0.50], extrapolated to t&nbsp;=&nbsp;0.75. ✅&nbsp;observed, 🔮&nbsp;predicted.
+          </figcaption>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             VIEWER 3: Dynamics Injection
+             Contribution (3): Compositional dynamics / controllable scene editing
+             ═══════════════════════════════════════════════════════════════ -->
+        <div style="margin:32px 0;">
+          <h4 class="sub-head">Dynamics Injection</h4>
+          <p class="paragraph" style="margin-bottom:16px;">
+            Because EvoGS represents motion as a continuous velocity field, we can <strong>inject, mix, or replace</strong> portions of the flow in specific scene regions without retraining — enabling compositional scene editing and localized motion synthesis.
+          </p>
+          <div class="viewer-container">
+            <iframe id="dynamics-viewer-frame" class="viewer-iframe"
+                    src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Original%20t%20%3D%200.00"
+                    allow="autoplay; fullscreen; xr-spatial-tracking"
+                    title="Dynamics Injection Viewer">
+            </iframe>
+            <div class="carousel-wrapper">
+              <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel('dynamics-carousel', -160)" aria-label="Scroll left">&#8249;</button>
+              <div id="dynamics-carousel" class="viewer-carousel">
+                <button class="thumb-card active" data-url="./assets/cut_roasted_beef_t0.splat" data-label="Original t = 0.00" onclick="switchScene(this, 'dynamics-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t0.jpg" alt="Original">
+                  <span class="thumb-label">Original t=0.00</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t25.splat" data-label="Injected t = 0.25" onclick="switchScene(this, 'dynamics-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t25.jpg" alt="Injected">
+                  <span class="thumb-label">Injected t=0.25</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t50.splat" data-label="Composed t = 0.50" onclick="switchScene(this, 'dynamics-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t50.jpg" alt="Composed">
+                  <span class="thumb-label">Composed t=0.50</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t75.splat" data-label="Composed t = 0.75" onclick="switchScene(this, 'dynamics-viewer-frame')">
+                  <img src="./assets/thumbnails/thumb_t75.jpg" alt="Composed">
+                  <span class="thumb-label">Composed t=0.75</span>
+                </button>
+              </div>
+              <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel('dynamics-carousel', 160)" aria-label="Scroll right">&#8250;</button>
+            </div>
+          </div>
+          <figcaption style="text-align:center; font-size:13px; color:var(--ink2); margin-top:10px;">
+            <em>cut_roasted_beef</em> — localized dynamics injection demonstrating compositional scene editing.
           </figcaption>
         </div>
 
         <style>
+          /* ── Shared viewer container & iframe styles ── */
+          .viewer-container {
+            position:relative; width:100%; max-width:1200px;
+            margin:0 auto; overflow:hidden; box-sizing:border-box;
+          }
+          .viewer-iframe {
+            width:100%; height:500px;
+            border:1px dashed rgba(0,0,0,0.25); border-radius:8px;
+            background:var(--paper, #ffffff); display:block; box-sizing:border-box;
+          }
+          .viewer-carousel {
+            display:flex; gap:12px; overflow-x:auto; padding:14px 4px 8px;
+            scrollbar-width:thin; scrollbar-color:rgba(0,0,0,0.2) transparent;
+            scroll-behavior:smooth;
+          }
+          .viewer-carousel::-webkit-scrollbar { height:6px; }
+          .viewer-carousel::-webkit-scrollbar-track { background:transparent; }
+          .viewer-carousel::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:3px; }
+          .viewer-carousel::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,0.3); }
+
           .thumb-card {
             flex:0 0 auto; width:140px; cursor:pointer;
             background:var(--bg2, #f5f5f5); border:2px solid transparent;
@@ -253,12 +355,6 @@
           }
           body[data-theme="dark"] .carousel-arrow:hover { background:rgba(154,160,255,0.15); }
 
-          /* Scrollbar styling for Webkit browsers */
-          #thumb-carousel::-webkit-scrollbar { height:6px; }
-          #thumb-carousel::-webkit-scrollbar-track { background:transparent; }
-          #thumb-carousel::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:3px; }
-          #thumb-carousel::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,0.3); }
-
           /* ── Mobile overrides for EvoGS project page ── */
           @media (max-width: 768px) {
             /* More breathing room on the sides */
@@ -283,8 +379,8 @@
               padding-right: 0 !important;
               max-width: 100% !important;
             }
-            /* Shorter iframe on phone + contained */
-            #splat-viewer-frame {
+            /* Shorter iframes on phone + contained */
+            .viewer-iframe {
               height: 320px !important;
               max-width: 100% !important;
             }
@@ -299,7 +395,7 @@
               font-size: 11px;
               padding: 5px 3px;
             }
-            #thumb-carousel {
+            .viewer-carousel {
               gap: 8px !important;
               padding: 10px 2px 6px !important;
             }
@@ -434,7 +530,12 @@
           }
         </style>
 
-        <!-- Key Contributions -->
+        <!--
+        ============================================================
+        COMMENTED OUT: Key Contributions, Method, Results sections
+        (replaced by interactive viewers above)
+        ============================================================
+
         <div style="margin:32px 0;">
           <h4 class="sub-head">Key Contributions</h4>
           <ul class="research-interests" style="margin-top:16px;">
@@ -444,60 +545,45 @@
           </ul>
         </div>
 
-        <!-- Method -->
         <div style="margin:32px 0;">
           <h4 class="sub-head">Method</h4>
           <p class="paragraph">
-            EvoGS treats each Gaussian as a particle evolving under a learned continuous-time dynamical system. The model consists of: (1) a 4D feature encoder that produces local embeddings from a factorized space–time representation (e.g., HexPlane), (2) a neural dynamical law predicting instantaneous time derivatives of Gaussian attributes (position, rotation, scale, color, opacity), and (3) a differentiable ODE integrator (RK4) that advances these states in time.
-          </p>
-          <p class="paragraph">
-            The state of each Gaussian evolves according to a continuous-time ODE, where a lightweight MLP predicts the velocity field. This enables both forward and backward temporal propagation, allowing the model to reconstruct motion through missing frames. To stabilize long-term integration, we introduce Gaussian waypoints—sparse anchor snapshots that act as reference states, reducing drift accumulation over long temporal horizons.
+            EvoGS treats each Gaussian as a particle evolving under a learned continuous-time dynamical system...
           </p>
         </div>
 
-        <!-- Results -->
         <div style="margin:32px 0;">
           <h4 class="sub-head">Results</h4>
           <p class="paragraph">
-            We evaluate EvoGS on synthetic (D-NeRF) and real-world (N3DV, Nerfies) dynamic scene datasets, comparing against state-of-the-art methods including HexPlane, K-Planes, 4DGS, and Deformable 3DGS. Our approach demonstrates superior performance in sparse-frame and extrapolation settings, maintaining coherent motion trajectories even when training on every 8th frame.
-          </p>
-          <p class="paragraph">
-            A key advantage of our formulation is controllable dynamics: by representing motion as a continuous velocity field, we can inject, mix, or replace portions of the flow to produce new motion without retraining. This enables localized motion synthesis and compositional scene editing.
+            We evaluate EvoGS on synthetic (D-NeRF) and real-world (N3DV, Nerfies) dynamic scene datasets...
           </p>
 
-          <!-- Sparse Frame Reconstruction -->
           <div class="project-figure" style="margin-top:32px;">
             <video controls preload="metadata" style="width:100%; border-radius:8px;">
               <source src="./assets/sparse_frame_reconstruction.mp4" type="video/mp4">
-              Your browser does not support the video tag.
             </video>
-            <figcaption>
-              Sample-efficient learning from sparse temporal supervision.
-            </figcaption>
+            <figcaption>Sparse temporal supervision.</figcaption>
           </div>
 
-          <!-- Future Rollout -->
           <div class="project-figure" style="margin-top:32px;">
             <video controls preload="metadata" style="width:100%; border-radius:8px;">
               <source src="./assets/future_rollout.mp4" type="video/mp4">
-              Your browser does not support the video tag.
             </video>
-            <figcaption>
-              Temporal extrapolation enabling forward and backward prediction beyond observed time ranges.
-            </figcaption>
+            <figcaption>Temporal extrapolation.</figcaption>
           </div>
 
-          <!-- Dynamics Injection -->
           <div class="project-figure" style="margin-top:32px;">
             <video controls preload="metadata" style="width:100%; border-radius:8px;">
               <source src="./assets/dynamics_injection.mp4" type="video/mp4">
-              Your browser does not support the video tag.
             </video>
-            <figcaption>
-              Compositional dynamics that allow localized dynamics injection for controllable scene synthesis.
-            </figcaption>
+            <figcaption>Dynamics injection.</figcaption>
           </div>
         </div>
+
+        ============================================================
+        END COMMENTED-OUT SECTIONS
+        ============================================================
+        -->
 
         <!-- Citation -->
         <div style="margin:48px 0;">
@@ -540,33 +626,41 @@
       }
     })();
 
-    // Carousel scroll arrows
+    // Generic carousel scroll helper
+    function scrollCarousel(carouselId, amount) {
+      const carousel = document.getElementById(carouselId);
+      if (carousel) carousel.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    // Initialize arrow state for all carousels
     (function() {
-      const carousel = document.getElementById('thumb-carousel');
-      const leftBtn = document.getElementById('carousel-left');
-      const rightBtn = document.getElementById('carousel-right');
-      const scrollAmount = 160;
+      document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
+        const carousel = wrapper.querySelector('.viewer-carousel');
+        const leftBtn = wrapper.querySelector('.carousel-arrow-left');
+        const rightBtn = wrapper.querySelector('.carousel-arrow-right');
+        if (!carousel || !leftBtn || !rightBtn) return;
 
-      function updateArrows() {
-        leftBtn.disabled = carousel.scrollLeft <= 2;
-        rightBtn.disabled = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 2;
-      }
-
-      leftBtn.addEventListener('click', () => { carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); });
-      rightBtn.addEventListener('click', () => { carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
-      carousel.addEventListener('scroll', updateArrows);
-      window.addEventListener('resize', updateArrows);
-      // Initial state
-      setTimeout(updateArrows, 100);
+        function updateArrows() {
+          leftBtn.disabled = carousel.scrollLeft <= 2;
+          rightBtn.disabled = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 2;
+        }
+        carousel.addEventListener('scroll', updateArrows);
+        window.addEventListener('resize', updateArrows);
+        setTimeout(updateArrows, 100);
+      });
     })();
 
-    function switchScene(btn) {
-      // Update active state
-      document.querySelectorAll('.thumb-card').forEach(t => t.classList.remove('active'));
+    // Multi-viewer scene switching — scoped to the correct carousel + iframe
+    function switchScene(btn, iframeId) {
+      // Update active state only within the same carousel
+      const carousel = btn.closest('.viewer-carousel');
+      if (carousel) {
+        carousel.querySelectorAll('.thumb-card').forEach(t => t.classList.remove('active'));
+      }
       btn.classList.add('active');
 
-      // Send message to viewer iframe to switch scene
-      const frame = document.getElementById('splat-viewer-frame');
+      // Send message to the targeted viewer iframe
+      const frame = document.getElementById(iframeId);
       const url = btn.getAttribute('data-url');
       const label = btn.getAttribute('data-label');
       if (frame && frame.contentWindow) {
