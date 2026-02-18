@@ -9,23 +9,25 @@
     html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; }
     #controls {
       position: fixed; top: 10px; left: 10px; z-index: 100;
-      background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 6px;
-      color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 12px; line-height: 1.6;
+      background: rgba(255,255,255,0.75); padding: 10px 14px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.15);
+      color: #333; font-family: 'Noto Sans', sans-serif; font-size: 12px; line-height: 1.6;
       pointer-events: none; transition: opacity 1s;
     }
     #scene-label {
       position: fixed; top: 10px; right: 10px; z-index: 100;
-      background: rgba(0,0,0,0.6); padding: 8px 14px; border-radius: 6px;
-      color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 13px;
+      background: rgba(255,255,255,0.75); padding: 8px 14px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.15);
+      color: #333; font-family: 'Noto Sans', sans-serif; font-size: 13px;
       pointer-events: none;
     }
     #loading {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 16px; z-index: 50;
+      color: #333; font-family: 'Noto Sans', sans-serif; font-size: 16px; z-index: 50;
     }
     #loading .spinner {
       width: 32px; height: 32px; margin: 0 auto 12px; 
-      border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff;
+      border: 3px solid rgba(0,0,0,0.15); border-top-color: #333;
       border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -116,7 +118,7 @@
 
       } catch (err) {
         console.error('Viewer init failed:', err);
-        loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
+        loadingEl.innerHTML = '<div style="text-align:center;color:#cc3333;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
       }
     }
 
@@ -156,7 +158,7 @@
 
       } catch (err) {
         console.error('Failed to load scene:', err);
-        loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
+        loadingEl.innerHTML = '<div style="text-align:center;color:#cc3333;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
       } finally {
         isLoading = false;
       }
