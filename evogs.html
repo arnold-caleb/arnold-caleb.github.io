@@ -8,9 +8,9 @@
   <meta name="author" content="Arnold Caleb Asiimwe">
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <link href="../css/styles.css" rel="stylesheet">
-  <link rel="icon" type="image/jpeg" href="../assets/profilepic.jpg">
-  <link rel="apple-touch-icon" href="../assets/profilepic.jpg">
+  <link href="css/styles.css" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="./assets/profilepic.jpg">
+  <link rel="apple-touch-icon" href="./assets/profilepic.jpg">
   <title>EvoGS: 4D Gaussian Splatting as a Learned Dynamical System</title>
 
   <!-- Structured Data for SEO -->
@@ -39,13 +39,23 @@
     "description": "EvoGS: 4D Gaussian Splatting as a Learned Dynamical System"
   }
   </script>
+
+  <!-- Three.js + Gaussian Splats 3D for interactive viewer -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+      "@mkkellogg/gaussian-splats-3d": "https://unpkg.com/@mkkellogg/gaussian-splats-3d@0.4.6/build/gaussian-splats-3d.module.js"
+    }
+  }
+  </script>
 </head>
 <body>
   <div class="container">
     <!-- LEFT: Navigation/Back link -->
     <aside class="side-content" aria-label="Navigation">
       <div class="glass note" style="margin-bottom:12px; font-size:14.5px; line-height:1.4;">
-        <a href="../index.html" class="navlink" style="display:block; margin-bottom:16px;">← Back to Home</a>
+        <a href="index.html" class="navlink" style="display:block; margin-bottom:16px;">← Back to Home</a>
         
         <div class="info-row">
           <span class="label">Project:</span>
@@ -65,8 +75,8 @@
       <div class="glass note" style="font-size:14.5px; line-height:1.4;">
         <h4 class="sub-head" style="margin-top:0;">Links</h4>
         <div style="margin-top:12px;">
-          <a href="../assets/evogs.pdf" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
-            <img src="../assets/arxiv.svg" alt="arXiv" style="width:14px; height:14px; vertical-align:middle;">
+          <a href="./assets/evogs.pdf" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
+            <img src="./assets/arxiv.svg" alt="arXiv" style="width:14px; height:14px; vertical-align:middle;">
             Paper
           </a>
           <a href="https://github.com/arnold-caleb/evogs" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
@@ -75,12 +85,12 @@
             </svg>
             Code
           </a>
-          <a href="#" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
+          <!-- <a href="#" class="badge" target="_blank" style="display:inline-flex; align-items:center; gap:4px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
               <path d="M8 5v14l11-7z" fill="currentColor"/>
             </svg>
             Video
-          </a>
+          </a> -->
         </div>
       </div>
 
@@ -102,7 +112,7 @@
         </h1>
         <div style="margin-bottom:24px;">
           <div class="info-row" style="margin-bottom:8px;">
-            <a href="../index.html" class="sub-proj-link">Arnold Caleb Asiimwe</a><sup>1</sup>,
+            <a href="index.html" class="sub-proj-link">Arnold Caleb Asiimwe</a><sup>1</sup>,
             <a href="https://www.cs.columbia.edu/~vondrick/" class="sub-proj-link" target="_blank">Carl Vondrick</a><sup>2</sup>
           </div>
           <div class="info-row" style="font-size:14px; color:var(--ink2); margin-top:8px;">
@@ -128,10 +138,34 @@
 
         <!-- Teaser/Figure -->
         <div class="project-figure">
-          <img src="../assets/evogs.png" 
+          <img src="./assets/evogs.png" 
                alt="EvoGS Teaser Figure">
           <figcaption>
             EvoGS learns to model dynamic scenes as continuous evolution functions.
+          </figcaption>
+        </div>
+
+        <!-- Interactive 3D Gaussian Splatting Viewer -->
+        <div style="margin:32px 0;">
+          <h4 class="sub-head">Interactive Viewer</h4>
+          <p class="paragraph" style="margin-bottom:16px;">
+            Explore the 3D Gaussian point cloud below. This is a real scene reconstructed by EvoGS — each Gaussian primitive is rendered in real-time using WebGL.
+          </p>
+          <div style="position:relative; width:100%; max-width:1200px; margin:0 auto;">
+            <div id="splat-container" style="width:100%; height:500px; border-radius:8px; overflow:hidden; background:#1a1a2e; border:1px solid var(--ink); position:relative;">
+              <!-- Viewer canvas gets inserted here by the library -->
+            </div>
+            <div id="viewer-controls" style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:10px 14px; border-radius:6px; color:#fff; font-size:12px; line-height:1.6; pointer-events:none; z-index:10;">
+              <div>🖱️ Left-click + drag: Rotate</div>
+              <div>🖱️ Scroll: Zoom</div>
+              <div>🖱️ Right-click + drag: Pan</div>
+            </div>
+            <div id="viewer-loading" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; font-size:16px; z-index:5;">
+              Loading scene...
+            </div>
+          </div>
+          <figcaption style="text-align:center; font-size:13px; color:var(--ink2); margin-top:10px;">
+            <em>cut_roasted_beef</em> scene — 28,852 Gaussian primitives rendered in real-time.
           </figcaption>
         </div>
 
@@ -169,7 +203,7 @@
           <!-- Sparse Frame Reconstruction -->
           <div class="project-figure" style="margin-top:32px;">
             <video controls preload="metadata" style="width:100%; border-radius:8px;">
-              <source src="../assets/sparse_frame_reconstruction.mp4" type="video/mp4">
+              <source src="./assets/sparse_frame_reconstruction.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
             <figcaption>
@@ -180,7 +214,7 @@
           <!-- Future Rollout -->
           <div class="project-figure" style="margin-top:32px;">
             <video controls preload="metadata" style="width:100%; border-radius:8px;">
-              <source src="../assets/future_rollout.mp4" type="video/mp4">
+              <source src="./assets/future_rollout.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
             <figcaption>
@@ -191,7 +225,7 @@
           <!-- Dynamics Injection -->
           <div class="project-figure" style="margin-top:32px;">
             <video controls preload="metadata" style="width:100%; border-radius:8px;">
-              <source src="../assets/dynamics_injection.mp4" type="video/mp4">
+              <source src="./assets/dynamics_injection.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
             <figcaption>
@@ -227,15 +261,14 @@
     <span class="toggle-knob"></span>
   </button>
 
-  <script src="../js/theme.js"></script>
-  <script src="../js/navigation.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/navigation.js"></script>
   <script>
     function copyCitation() {
       const citationText = document.getElementById('citation-text').textContent;
       const copyBtn = document.querySelector('.citation-copy-btn');
       
       navigator.clipboard.writeText(citationText).then(() => {
-        // Visual feedback
         const originalHTML = copyBtn.innerHTML;
         copyBtn.classList.add('copied');
         copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg>';
@@ -247,6 +280,51 @@
       }).catch(err => {
         console.error('Failed to copy citation:', err);
       });
+    }
+  </script>
+
+  <!-- Interactive Gaussian Splatting Viewer -->
+  <script type="module">
+    import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
+
+    const container = document.getElementById('splat-container');
+    const loadingEl = document.getElementById('viewer-loading');
+    const controlsEl = document.getElementById('viewer-controls');
+
+    if (container) {
+      try {
+        const viewer = new GaussianSplats3D.Viewer({
+          'rootElement': container,
+          'cameraUp': [0, -1, 0],
+          'initialCameraPosition': [0, -2, 6],
+          'initialCameraLookAt': [0, 0, 0],
+          'sharedMemoryForWorkers': false,
+          'dynamicScene': false,
+          'selfDrivenMode': true
+        });
+
+        viewer.addSplatScene('./assets/cut_roasted_beef.splat', {
+          'splatAlphaRemovalThreshold': 5,
+          'showLoadingUI': false
+        })
+        .then(() => {
+          if (loadingEl) loadingEl.style.display = 'none';
+          // Fade out controls after 6 seconds
+          setTimeout(() => {
+            if (controlsEl) controlsEl.style.transition = 'opacity 1s';
+            if (controlsEl) controlsEl.style.opacity = '0';
+            setTimeout(() => { if (controlsEl) controlsEl.style.display = 'none'; }, 1000);
+          }, 6000);
+          viewer.start();
+        })
+        .catch(err => {
+          console.error('Failed to load splat scene:', err);
+          if (loadingEl) loadingEl.textContent = 'Failed to load 3D viewer. Try refreshing.';
+        });
+      } catch (err) {
+        console.error('WebGL not supported or viewer init failed:', err);
+        if (loadingEl) loadingEl.textContent = 'WebGL not supported in this browser.';
+      }
     }
   </script>
 </body>
