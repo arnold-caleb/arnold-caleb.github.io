@@ -199,25 +199,28 @@
           }
           /* Carousel wrapper with arrows */
           .carousel-wrapper {
-            display:flex; align-items:center; gap:0; position:relative;
+            position:relative;
           }
           .carousel-arrow {
-            flex:0 0 auto; width:32px; height:32px;
+            position:absolute; top:50%; transform:translateY(-50%);
+            width:28px; height:28px;
             display:flex; align-items:center; justify-content:center;
-            background:var(--paper, #fff); border:1px solid rgba(0,0,0,0.2);
-            border-radius:50%; cursor:pointer; font-size:20px; line-height:1;
-            color:#333; transition:all 0.2s; z-index:2;
+            background:var(--paper, #fff); border:1px solid rgba(0,0,0,0.25);
+            border-radius:50%; cursor:pointer; font-size:18px; line-height:1;
+            color:#333; transition:all 0.2s; z-index:5;
             padding:0; font-family:inherit;
+            box-shadow:0 1px 4px rgba(0,0,0,0.1);
           }
-          .carousel-arrow:hover { background:rgba(0,0,0,0.06); transform:scale(1.1); }
-          .carousel-arrow:active { transform:scale(0.95); }
-          .carousel-arrow:disabled { opacity:0.25; cursor:default; transform:none; }
-          .carousel-arrow-left { margin-right:6px; }
-          .carousel-arrow-right { margin-left:6px; }
+          .carousel-arrow:hover { background:rgba(0,0,0,0.06); transform:translateY(-50%) scale(1.12); }
+          .carousel-arrow:active { transform:translateY(-50%) scale(0.95); }
+          .carousel-arrow:disabled { opacity:0.2; cursor:default; transform:translateY(-50%); }
+          .carousel-arrow-left { left:4px; }
+          .carousel-arrow-right { right:4px; }
           body[data-theme="dark"] .carousel-arrow {
-            background:rgba(18,20,42,0.6); border-color:rgba(154,160,255,0.28); color:var(--ink, #e4e6ff);
+            background:rgba(18,20,42,0.8); border-color:rgba(154,160,255,0.28); color:var(--ink, #e4e6ff);
+            box-shadow:0 1px 4px rgba(0,0,0,0.3);
           }
-          body[data-theme="dark"] .carousel-arrow:hover { background:rgba(154,160,255,0.12); }
+          body[data-theme="dark"] .carousel-arrow:hover { background:rgba(154,160,255,0.15); }
 
           /* Scrollbar styling for Webkit browsers */
           #thumb-carousel::-webkit-scrollbar { height:6px; }
