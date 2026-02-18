@@ -127,9 +127,15 @@
           </a>
         </div>
         <div style="margin-bottom:24px;">
-          <div class="info-row" style="margin-bottom:8px;">
-            <a href="index.html" class="sub-proj-link">Arnold Caleb Asiimwe</a><sup>1</sup>,
-            <a href="https://www.cs.columbia.edu/~vondrick/" class="sub-proj-link" target="_blank">Carl Vondrick</a><sup>2</sup>
+          <div class="info-row" style="margin-bottom:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span style="display:inline-flex; align-items:center; gap:4px;">
+              <img src="./assets/thumbnails/arnold.jpg" alt="" class="author-headshot">
+              <a href="index.html" class="sub-proj-link">Arnold Caleb Asiimwe</a><sup>1</sup>,
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:4px;">
+              <img src="./assets/thumbnails/carl.jpg" alt="" class="author-headshot">
+              <a href="https://www.cs.columbia.edu/~vondrick/" class="sub-proj-link" target="_blank">Carl Vondrick</a><sup>2</sup>
+            </span>
           </div>
           <div class="info-row" style="font-size:14px; color:var(--ink2); margin-top:8px;">
             <sup>1</sup>Princeton University<br>
@@ -324,6 +330,18 @@
             margin:0;
             transition:opacity 0.35s ease;
           }
+          /* Author headshot thumbnails */
+          .author-headshot {
+            width:26px; height:26px;
+            border-radius:50%;
+            object-fit:cover;
+            border:1px solid rgba(0,0,0,0.15);
+            flex-shrink:0;
+          }
+          body[data-theme="dark"] .author-headshot {
+            border-color:rgba(154,160,255,0.3);
+          }
+
           /* Inline badges: hidden by default, shown when sidebar collapsed */
           .inline-badges {
             display:none;
