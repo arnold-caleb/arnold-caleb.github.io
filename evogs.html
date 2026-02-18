@@ -300,18 +300,19 @@
 
           /* ── Sidebar divider line + collapse toggle ── */
           .sidebar-divider {
-            flex:0 0 1px;
+            flex:0 0 0px;
+            width:0px;
             align-self:stretch;
-            background:#000000;
+            border-left:1px solid #000000;
             position:relative;
-            margin:0 -1px;
+            margin:0;
             transition:opacity 0.35s ease;
           }
           .container.sidebar-collapsed .sidebar-divider {
             opacity:0;
           }
           body[data-theme="dark"] .sidebar-divider {
-            background:#2a2e54;
+            border-left-color:#2a2e54;
           }
           .sidebar-toggle {
             position:sticky; top:50vh;
