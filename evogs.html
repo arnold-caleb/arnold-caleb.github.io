@@ -176,12 +176,35 @@
           <p class="paragraph" style="margin-bottom:16px;">
             EvoGS learns smooth motion from <strong>sparse temporal supervision</strong> — training on only a subset of frames (e.g., every 3rd frame) yet faithfully reconstructing the full continuous evolution. Explore the 3D point cloud at different timepoints.
           </p>
+          <!-- Controls: sparsity level + integrator order -->
+          <div class="viewer-controls-bar">
+            <label class="control-label">
+              Sparsity
+              <select id="sparse-stride-select" class="control-select" onchange="onSparseConfigChange()">
+                <option value="3" selected>Every 3rd frame</option>
+                <option value="5" disabled>Every 5th frame (coming soon)</option>
+                <option value="8" disabled>Every 8th frame (coming soon)</option>
+              </select>
+            </label>
+            <label class="control-label">
+              Integrator
+              <select id="sparse-integrator-select" class="control-select" onchange="onSparseConfigChange()">
+                <option value="rk4" selected>RK4</option>
+                <option value="euler" disabled>Euler (coming soon)</option>
+                <option value="midpoint" disabled>Midpoint (coming soon)</option>
+              </select>
+            </label>
+          </div>
           <div class="viewer-container">
             <iframe id="sparse-viewer-frame" class="viewer-iframe"
                     src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Sparse%20t%20%3D%200.00"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
+                    allowfullscreen
                     title="Sparse Reconstruction Viewer">
             </iframe>
+            <button class="viewer-fullscreen-btn" onclick="toggleFullscreen('sparse-viewer-frame')" title="Fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </button>
             <div class="carousel-wrapper">
               <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel('sparse-carousel', -160)" aria-label="Scroll left">&#8249;</button>
               <div id="sparse-carousel" class="viewer-carousel">
@@ -223,8 +246,12 @@
             <iframe id="future-viewer-frame" class="viewer-iframe"
                     src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Observed%20t%20%3D%200.00"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
+                    allowfullscreen
                     title="Future Prediction Viewer">
             </iframe>
+            <button class="viewer-fullscreen-btn" onclick="toggleFullscreen('future-viewer-frame')" title="Fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </button>
             <div class="carousel-wrapper">
               <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel('future-carousel', -160)" aria-label="Scroll left">&#8249;</button>
               <div id="future-carousel" class="viewer-carousel">
@@ -266,8 +293,12 @@
             <iframe id="dynamics-viewer-frame" class="viewer-iframe"
                     src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Original%20t%20%3D%200.00"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
+                    allowfullscreen
                     title="Dynamics Injection Viewer">
             </iframe>
+            <button class="viewer-fullscreen-btn" onclick="toggleFullscreen('dynamics-viewer-frame')" title="Fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </button>
             <div class="carousel-wrapper">
               <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel('dynamics-carousel', -160)" aria-label="Scroll left">&#8249;</button>
               <div id="dynamics-carousel" class="viewer-carousel">
@@ -306,6 +337,51 @@
             width:100%; height:500px;
             border:1px dashed rgba(0,0,0,0.25); border-radius:8px;
             background:var(--paper, #ffffff); display:block; box-sizing:border-box;
+          }
+
+          /* ── Fullscreen button ── */
+          .viewer-fullscreen-btn {
+            position:absolute; top:10px; right:10px;
+            width:32px; height:32px;
+            display:flex; align-items:center; justify-content:center;
+            background:var(--paper, #fff); border:1px solid rgba(0,0,0,0.2);
+            border-radius:6px; cursor:pointer; z-index:6;
+            padding:0; box-shadow:0 1px 4px rgba(0,0,0,0.1);
+            transition:all 0.2s;
+          }
+          .viewer-fullscreen-btn svg { width:16px; height:16px; color:#333; }
+          .viewer-fullscreen-btn:hover { background:rgba(0,0,0,0.06); box-shadow:0 2px 8px rgba(0,0,0,0.15); transform:scale(1.08); }
+          .viewer-fullscreen-btn:active { transform:scale(0.95); }
+          body[data-theme="dark"] .viewer-fullscreen-btn {
+            background:rgba(18,20,42,0.8); border-color:rgba(154,160,255,0.28);
+          }
+          body[data-theme="dark"] .viewer-fullscreen-btn svg { color:var(--ink, #e4e6ff); }
+          body[data-theme="dark"] .viewer-fullscreen-btn:hover { background:rgba(154,160,255,0.15); }
+
+          /* ── Controls bar (sparsity / integrator dropdowns) ── */
+          .viewer-controls-bar {
+            display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+            margin-bottom:12px; padding:10px 14px;
+            background:var(--bg2, #f5f5f5); border:1px solid rgba(0,0,0,0.08);
+            border-radius:8px; font-size:13px;
+          }
+          .control-label {
+            display:flex; align-items:center; gap:6px;
+            font-weight:600; color:var(--ink, #333); font-size:13px;
+          }
+          .control-select {
+            padding:4px 8px; border:1px solid rgba(0,0,0,0.15);
+            border-radius:5px; font-size:13px; font-family:inherit;
+            background:var(--paper, #fff); color:var(--ink, #333);
+            cursor:pointer; outline:none;
+          }
+          .control-select:focus { border-color:rgba(0,0,0,0.4); }
+          .control-select option:disabled { color:#999; }
+          body[data-theme="dark"] .viewer-controls-bar {
+            background:rgba(18,20,42,0.4); border-color:rgba(154,160,255,0.15);
+          }
+          body[data-theme="dark"] .control-select {
+            background:rgba(18,20,42,0.6); border-color:rgba(154,160,255,0.25); color:var(--ink, #e4e6ff);
           }
           .viewer-carousel {
             display:flex; gap:12px; overflow-x:auto; padding:14px 4px 8px;
@@ -666,6 +742,32 @@
       if (frame && frame.contentWindow) {
         frame.contentWindow.postMessage({ type: 'loadScene', url: url, label: label }, '*');
       }
+    }
+
+    // Fullscreen toggle for viewer iframes
+    function toggleFullscreen(iframeId) {
+      const iframe = document.getElementById(iframeId);
+      if (!iframe) return;
+      if (document.fullscreenElement === iframe) {
+        document.exitFullscreen();
+      } else {
+        iframe.requestFullscreen().catch(err => {
+          console.warn('Fullscreen not supported:', err);
+          // Fallback: open viewer in new tab
+          window.open(iframe.src, '_blank');
+        });
+      }
+    }
+
+    // Sparse config change handler (scaffold — swaps splat sets when available)
+    function onSparseConfigChange() {
+      const stride = document.getElementById('sparse-stride-select').value;
+      const integrator = document.getElementById('sparse-integrator-select').value;
+      // Future: load different splat sets based on stride + integrator
+      // For now, log the selection
+      console.log(`[Sparse Config] stride=${stride}, integrator=${integrator}`);
+      // TODO: when splats for different configs are available, update the carousel:
+      // updateSparseCarousel(stride, integrator);
     }
 
     function copyCitation() {
