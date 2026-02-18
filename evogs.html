@@ -40,15 +40,6 @@
   }
   </script>
 
-  <!-- Three.js + Gaussian Splats 3D for interactive viewer -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
-      "@mkkellogg/gaussian-splats-3d": "https://unpkg.com/@mkkellogg/gaussian-splats-3d@0.4.6/build/gaussian-splats-3d.module.js"
-    }
-  }
-  </script>
 </head>
 <body>
   <div class="container">
@@ -152,17 +143,12 @@
             Explore the 3D Gaussian point cloud below. This is a real scene reconstructed by EvoGS — each Gaussian primitive is rendered in real-time using WebGL.
           </p>
           <div style="position:relative; width:100%; max-width:1200px; margin:0 auto;">
-            <div id="splat-container" style="width:100%; height:500px; border-radius:8px; overflow:hidden; background:#1a1a2e; border:1px solid var(--ink); position:relative;">
-              <!-- Viewer canvas gets inserted here by the library -->
-            </div>
-            <div id="viewer-controls" style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:10px 14px; border-radius:6px; color:#fff; font-size:12px; line-height:1.6; pointer-events:none; z-index:10;">
-              <div>🖱️ Left-click + drag: Rotate</div>
-              <div>🖱️ Scroll: Zoom</div>
-              <div>🖱️ Right-click + drag: Pan</div>
-            </div>
-            <div id="viewer-loading" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; font-size:16px; z-index:5;">
-              Loading scene...
-            </div>
+            <iframe src="./viewer.html" 
+                    style="width:100%; height:500px; border:none; border-radius:8px; background:#1a1a2e; display:block;"
+                    allow="autoplay; fullscreen; xr-spatial-tracking"
+                    loading="lazy"
+                    title="Interactive 3D Gaussian Splatting Viewer">
+            </iframe>
           </div>
           <figcaption style="text-align:center; font-size:13px; color:var(--ink2); margin-top:10px;">
             <em>cut_roasted_beef</em> scene — 28,852 Gaussian primitives rendered in real-time.
@@ -283,49 +269,5 @@
     }
   </script>
 
-  <!-- Interactive Gaussian Splatting Viewer -->
-  <script type="module">
-    import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
-
-    const container = document.getElementById('splat-container');
-    const loadingEl = document.getElementById('viewer-loading');
-    const controlsEl = document.getElementById('viewer-controls');
-
-    if (container) {
-      try {
-        const viewer = new GaussianSplats3D.Viewer({
-          'rootElement': container,
-          'cameraUp': [0, -1, 0],
-          'initialCameraPosition': [0, -2, 6],
-          'initialCameraLookAt': [0, 0, 0],
-          'sharedMemoryForWorkers': false,
-          'dynamicScene': false,
-          'selfDrivenMode': true
-        });
-
-        viewer.addSplatScene('./assets/cut_roasted_beef.splat', {
-          'splatAlphaRemovalThreshold': 5,
-          'showLoadingUI': false
-        })
-        .then(() => {
-          if (loadingEl) loadingEl.style.display = 'none';
-          // Fade out controls after 6 seconds
-          setTimeout(() => {
-            if (controlsEl) controlsEl.style.transition = 'opacity 1s';
-            if (controlsEl) controlsEl.style.opacity = '0';
-            setTimeout(() => { if (controlsEl) controlsEl.style.display = 'none'; }, 1000);
-          }, 6000);
-          viewer.start();
-        })
-        .catch(err => {
-          console.error('Failed to load splat scene:', err);
-          if (loadingEl) loadingEl.textContent = 'Failed to load 3D viewer. Try refreshing.';
-        });
-      } catch (err) {
-        console.error('WebGL not supported or viewer init failed:', err);
-        if (loadingEl) loadingEl.textContent = 'WebGL not supported in this browser.';
-      }
-    }
-  </script>
 </body>
 </html>

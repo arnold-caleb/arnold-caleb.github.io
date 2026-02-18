@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EvoGS Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a2e; }
+    #controls {
+      position: fixed; top: 10px; left: 10px; z-index: 100;
+      background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 6px;
+      color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 12px; line-height: 1.6;
+      pointer-events: none; transition: opacity 1s;
+    }
+    #loading {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 16px; z-index: 50;
+    }
+    #loading .spinner {
+      width: 32px; height: 32px; margin: 0 auto 12px; 
+      border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    canvas { display: block; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+      "@mkkellogg/gaussian-splats-3d": "https://unpkg.com/@mkkellogg/gaussian-splats-3d@0.4.6/build/gaussian-splats-3d.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="controls">
+    <div>🖱️ Left-click + drag: Rotate</div>
+    <div>🖱️ Scroll: Zoom</div>
+    <div>🖱️ Right-click + drag: Pan</div>
+  </div>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div style="text-align:center;">Loading scene...</div>
+  </div>
+
+  <script type="module">
+    import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
+
+    const loadingEl = document.getElementById('loading');
+    const controlsEl = document.getElementById('controls');
+
+    // Get splat URL from query param or use default
+    const params = new URLSearchParams(window.location.search);
+    const splatUrl = params.get('url') || './assets/cut_roasted_beef.splat';
+
+    try {
+      const viewer = new GaussianSplats3D.Viewer({
+        'cameraUp': [0, -1, 0],
+        'initialCameraPosition': [0, -2, 6],
+        'initialCameraLookAt': [0, 0, 0],
+        'sharedMemoryForWorkers': false,
+        'dynamicScene': false
+      });
+
+      viewer.addSplatScene(splatUrl, {
+        'splatAlphaRemovalThreshold': 5,
+        'showLoadingUI': false
+      })
+      .then(() => {
+        if (loadingEl) loadingEl.style.display = 'none';
+        // Fade out controls after 6 seconds
+        setTimeout(() => {
+          if (controlsEl) {
+            controlsEl.style.opacity = '0';
+            setTimeout(() => { controlsEl.style.display = 'none'; }, 1000);
+          }
+        }, 6000);
+        viewer.start();
+      })
+      .catch(err => {
+        console.error('Failed to load splat scene:', err);
+        if (loadingEl) loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
+      });
+    } catch (err) {
+      console.error('Viewer init failed:', err);
+      if (loadingEl) loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">WebGL not supported.</div>';
+    }
+  </script>
+</body>
+</html>
+
