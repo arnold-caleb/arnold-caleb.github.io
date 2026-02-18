@@ -244,9 +244,10 @@
           </p>
           <div class="viewer-container">
             <iframe id="future-viewer-frame" class="viewer-iframe"
-                    src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Observed%20t%20%3D%200.00"
+                    data-lazy-src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Observed%20t%20%3D%200.00"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
                     allowfullscreen
+                    loading="lazy"
                     title="Future Prediction Viewer">
             </iframe>
             <button class="viewer-fullscreen-btn" onclick="toggleFullscreen('future-viewer-frame')" title="Fullscreen">
@@ -291,9 +292,10 @@
           </p>
           <div class="viewer-container">
             <iframe id="dynamics-viewer-frame" class="viewer-iframe"
-                    src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Original%20t%20%3D%200.00"
+                    data-lazy-src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=Original%20t%20%3D%200.00"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
                     allowfullscreen
+                    loading="lazy"
                     title="Dynamics Injection Viewer">
             </iframe>
             <button class="viewer-fullscreen-btn" onclick="toggleFullscreen('dynamics-viewer-frame')" title="Fullscreen">
@@ -702,6 +704,25 @@
       }
     })();
 
+    // Lazy-load viewer iframes when they scroll into view
+    (function() {
+      const lazyFrames = document.querySelectorAll('iframe[data-lazy-src]');
+      if (!lazyFrames.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const iframe = entry.target;
+            iframe.src = iframe.getAttribute('data-lazy-src');
+            iframe.removeAttribute('data-lazy-src');
+            observer.unobserve(iframe);
+          }
+        });
+      }, { rootMargin: '200px' }); // Start loading 200px before visible
+
+      lazyFrames.forEach(f => observer.observe(f));
+    })();
+
     // Generic carousel scroll helper
     function scrollCarousel(carouselId, amount) {
       const carousel = document.getElementById(carouselId);
@@ -739,7 +760,14 @@
       const frame = document.getElementById(iframeId);
       const url = btn.getAttribute('data-url');
       const label = btn.getAttribute('data-label');
-      if (frame && frame.contentWindow) {
+      if (!frame) return;
+
+      // If iframe hasn't loaded yet (lazy), set its src directly with the new scene
+      if (frame.hasAttribute('data-lazy-src') || !frame.src || frame.src === 'about:blank') {
+        const viewerUrl = './viewer.html?url=' + encodeURIComponent(url) + '&label=' + encodeURIComponent(label || '');
+        frame.src = viewerUrl;
+        frame.removeAttribute('data-lazy-src');
+      } else if (frame.contentWindow) {
         frame.contentWindow.postMessage({ type: 'loadScene', url: url, label: label }, '*');
       }
     }
