@@ -298,69 +298,59 @@
 
           /* ── Sidebar collapse toggle ── */
           .sidebar-toggle {
-            flex:0 0 auto; align-self:stretch; position:relative;
-            width:20px; min-height:100%;
+            flex:0 0 auto;
+            position:sticky; top:50vh;
+            align-self:flex-start;
+            width:24px; height:24px;
             display:flex; align-items:center; justify-content:center;
-            background:transparent; border:none; cursor:pointer;
-            padding:0; margin:0 -10px;
+            background:var(--paper, #fff);
+            border:1px solid #000;
+            border-radius:50%;
+            cursor:pointer;
+            padding:0;
+            margin-left:-12px; margin-right:-12px;
             z-index:10;
-          }
-          .sidebar-toggle::before {
-            content:''; position:absolute; top:0; bottom:0; left:50%;
-            width:1px; background:#000000;
+            box-shadow:0 1px 4px rgba(0,0,0,0.1);
+            transition:box-shadow 0.2s;
           }
           .sidebar-toggle svg {
-            width:18px; height:18px; color:#333;
-            background:var(--paper, #fff); border:1px solid rgba(0,0,0,0.2);
-            border-radius:50%; padding:3px;
-            position:relative; z-index:2;
-            transition:transform 0.35s ease, color 0.25s;
+            width:14px; height:14px; color:#333;
+            transition:transform 0.35s ease;
           }
-          .sidebar-toggle:hover svg {
-            color:#000; transform:scale(1.15);
-            box-shadow:0 1px 4px rgba(0,0,0,0.12);
+          .sidebar-toggle:hover {
+            box-shadow:0 2px 8px rgba(0,0,0,0.18);
           }
           /* When collapsed, flip the arrow */
           .container.sidebar-collapsed .sidebar-toggle svg {
             transform:rotate(180deg);
           }
-          .container.sidebar-collapsed .sidebar-toggle:hover svg {
-            transform:rotate(180deg) scale(1.15);
-          }
           /* Sidebar slide animation */
           .container .side-content {
-            transition:width 0.35s ease, opacity 0.25s ease, margin 0.35s ease, padding 0.35s ease;
+            transition:width 0.35s ease, opacity 0.25s ease, flex 0.35s ease;
             overflow:hidden;
           }
           .container.sidebar-collapsed .side-content {
             width:0 !important; flex:0 0 0 !important;
-            opacity:0; margin:0; padding:0;
+            opacity:0;
             pointer-events:none;
           }
           /* Content adjusts smoothly */
           .container .content {
-            transition:all 0.35s ease;
+            transition:flex 0.35s ease, padding 0.35s ease;
           }
           .container.sidebar-collapsed .content {
-            border-left:none !important;
             padding-left:10px !important;
           }
-          /* Also remove the divider line when collapsed */
-          .container.sidebar-collapsed .sidebar-toggle::before {
-            background:transparent;
-          }
           /* Dark theme */
-          body[data-theme="dark"] .sidebar-toggle::before {
-            background:#2a2e54;
+          body[data-theme="dark"] .sidebar-toggle {
+            background:var(--paper, #0f1120);
+            border-color:rgba(154,160,255,0.4);
           }
           body[data-theme="dark"] .sidebar-toggle svg {
             color:var(--ink, #e4e6ff);
-            background:var(--paper, #0f1120);
-            border-color:rgba(154,160,255,0.28);
           }
-          body[data-theme="dark"] .sidebar-toggle:hover svg {
-            color:#fff;
-            box-shadow:0 1px 4px rgba(0,0,0,0.3);
+          body[data-theme="dark"] .sidebar-toggle:hover {
+            box-shadow:0 2px 8px rgba(0,0,0,0.35);
           }
           /* Hide toggle on mobile (sidebar stacks vertically) */
           @media (max-width:1040px) {
