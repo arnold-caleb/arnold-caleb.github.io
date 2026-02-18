@@ -95,11 +95,13 @@
     </aside>
 
     <!-- Sidebar toggle arrow on the divider -->
-    <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar" title="Toggle sidebar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </button>
+    <div class="sidebar-divider">
+      <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar" title="Toggle sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
 
     <!-- RIGHT: Main content -->
     <main class="content" style="border-left:none; padding-left:20px;">
@@ -296,11 +298,23 @@
             }
           }
 
-          /* ── Sidebar collapse toggle ── */
+          /* ── Sidebar divider line + collapse toggle ── */
+          .sidebar-divider {
+            flex:0 0 1px;
+            align-self:stretch;
+            background:#000000;
+            position:relative;
+            margin:0 -1px;
+            transition:opacity 0.35s ease;
+          }
+          .container.sidebar-collapsed .sidebar-divider {
+            opacity:0;
+          }
+          body[data-theme="dark"] .sidebar-divider {
+            background:#2a2e54;
+          }
           .sidebar-toggle {
-            flex:0 0 auto;
             position:sticky; top:50vh;
-            align-self:flex-start;
             width:24px; height:24px;
             display:flex; align-items:center; justify-content:center;
             background:var(--paper, #fff);
@@ -308,7 +322,7 @@
             border-radius:50%;
             cursor:pointer;
             padding:0;
-            margin-left:-12px; margin-right:-12px;
+            margin-left:-12px;
             z-index:10;
             box-shadow:0 1px 4px rgba(0,0,0,0.1);
             transition:box-shadow 0.2s;
@@ -352,9 +366,9 @@
           body[data-theme="dark"] .sidebar-toggle:hover {
             box-shadow:0 2px 8px rgba(0,0,0,0.35);
           }
-          /* Hide toggle on mobile (sidebar stacks vertically) */
+          /* Hide toggle + divider on mobile (sidebar stacks vertically) */
           @media (max-width:1040px) {
-            .sidebar-toggle { display:none !important; }
+            .sidebar-divider { display:none !important; }
           }
 
           /* Dark theme thumbnail adjustments */
