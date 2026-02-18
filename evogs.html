@@ -140,20 +140,64 @@
         <div style="margin:32px 0;">
           <h4 class="sub-head">Interactive Viewer</h4>
           <p class="paragraph" style="margin-bottom:16px;">
-            Explore the 3D Gaussian point cloud below. This is a real scene reconstructed by EvoGS — each Gaussian primitive is rendered in real-time using WebGL.
+            Explore the 3D Gaussian point cloud below. This is a real scene reconstructed by EvoGS — each Gaussian primitive is rendered in real-time using WebGL. Select a timepoint to see how the scene evolves.
           </p>
           <div style="position:relative; width:100%; max-width:1200px; margin:0 auto;">
-            <iframe src="./viewer.html" 
+            <iframe id="splat-viewer-frame"
+                    src="./viewer.html?url=./assets/cut_roasted_beef_t0.splat&label=t%20%3D%200.00" 
                     style="width:100%; height:500px; border:none; border-radius:8px; background:#1a1a2e; display:block;"
                     allow="autoplay; fullscreen; xr-spatial-tracking"
-                    loading="lazy"
                     title="Interactive 3D Gaussian Splatting Viewer">
             </iframe>
+
+            <!-- Thumbnail Carousel -->
+            <div id="thumb-carousel" style="
+              display:flex; gap:12px; overflow-x:auto; padding:14px 4px 8px;
+              scrollbar-width:thin; scrollbar-color:rgba(0,0,0,0.2) transparent;
+            ">
+              <button class="thumb-card active" data-url="./assets/cut_roasted_beef_t0.splat" data-label="t = 0.00" onclick="switchScene(this)">
+                <img src="./assets/thumbnails/thumb_t0.jpg" alt="t=0.00">
+                <span class="thumb-label">t = 0.00</span>
+              </button>
+              <button class="thumb-card" data-url="./assets/cut_roasted_beef_t25.splat" data-label="t = 0.25" onclick="switchScene(this)">
+                <img src="./assets/thumbnails/thumb_t25.jpg" alt="t=0.25">
+                <span class="thumb-label">t = 0.25</span>
+              </button>
+              <button class="thumb-card" data-url="./assets/cut_roasted_beef_t50.splat" data-label="t = 0.50" onclick="switchScene(this)">
+                <img src="./assets/thumbnails/thumb_t50.jpg" alt="t=0.50">
+                <span class="thumb-label">t = 0.50</span>
+              </button>
+              <button class="thumb-card" data-url="./assets/cut_roasted_beef_t75.splat" data-label="t = 0.75" onclick="switchScene(this)">
+                <img src="./assets/thumbnails/thumb_t75.jpg" alt="t=0.75">
+                <span class="thumb-label">t = 0.75</span>
+              </button>
+            </div>
           </div>
           <figcaption style="text-align:center; font-size:13px; color:var(--ink2); margin-top:10px;">
-            <em>cut_roasted_beef</em> scene — 28,852 Gaussian primitives rendered in real-time.
+            <em>cut_roasted_beef</em> — 217,102 Gaussian primitives rendered in real-time. Click a frame to switch timepoints.
           </figcaption>
         </div>
+
+        <style>
+          .thumb-card {
+            flex:0 0 auto; width:140px; cursor:pointer;
+            background:var(--bg2, #f5f5f5); border:2px solid transparent;
+            border-radius:8px; overflow:hidden; transition:border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+            padding:0; font-family:inherit; outline:none;
+          }
+          .thumb-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+          .thumb-card.active { border-color:var(--accent, #4a6cf7); box-shadow:0 0 0 2px rgba(74,108,247,0.25); }
+          .thumb-card img { width:100%; height:90px; object-fit:cover; display:block; }
+          .thumb-label {
+            display:block; text-align:center; padding:6px 4px; font-size:12px;
+            font-weight:600; color:var(--ink, #333); letter-spacing:0.3px;
+          }
+          /* Scrollbar styling for Webkit browsers */
+          #thumb-carousel::-webkit-scrollbar { height:6px; }
+          #thumb-carousel::-webkit-scrollbar-track { background:transparent; }
+          #thumb-carousel::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:3px; }
+          #thumb-carousel::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,0.3); }
+        </style>
 
         <!-- Key Contributions -->
         <div style="margin:32px 0;">
@@ -250,6 +294,20 @@
   <script src="js/theme.js"></script>
   <script src="js/navigation.js"></script>
   <script>
+    function switchScene(btn) {
+      // Update active state
+      document.querySelectorAll('.thumb-card').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Send message to viewer iframe to switch scene
+      const frame = document.getElementById('splat-viewer-frame');
+      const url = btn.getAttribute('data-url');
+      const label = btn.getAttribute('data-label');
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({ type: 'loadScene', url: url, label: label }, '*');
+      }
+    }
+
     function copyCitation() {
       const citationText = document.getElementById('citation-text').textContent;
       const copyBtn = document.querySelector('.citation-copy-btn');

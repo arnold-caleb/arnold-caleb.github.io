@@ -13,6 +13,12 @@
       color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 12px; line-height: 1.6;
       pointer-events: none; transition: opacity 1s;
     }
+    #scene-label {
+      position: fixed; top: 10px; right: 10px; z-index: 100;
+      background: rgba(0,0,0,0.6); padding: 8px 14px; border-radius: 6px;
+      color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 13px;
+      pointer-events: none;
+    }
     #loading {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
       color: #fff; font-family: 'Noto Sans', sans-serif; font-size: 16px; z-index: 50;
@@ -40,6 +46,7 @@
     <div>🖱️ Scroll: Zoom</div>
     <div>🖱️ Right-click + drag: Pan</div>
   </div>
+  <div id="scene-label"></div>
   <div id="loading">
     <div class="spinner"></div>
     <div style="text-align:center;">Loading scene...</div>
@@ -50,26 +57,55 @@
 
     const loadingEl = document.getElementById('loading');
     const controlsEl = document.getElementById('controls');
+    const sceneLabelEl = document.getElementById('scene-label');
 
-    // Get splat URL from query param or use default
+    // Get initial splat URL from query param or use default
     const params = new URLSearchParams(window.location.search);
-    const splatUrl = params.get('url') || './assets/cut_roasted_beef.splat';
+    let currentUrl = params.get('url') || './assets/cut_roasted_beef_t0.splat';
+    let currentLabel = params.get('label') || '';
 
-    try {
-      const viewer = new GaussianSplats3D.Viewer({
-        'cameraUp': [0, -1, 0],
-        'initialCameraPosition': [0, -2, 6],
-        'initialCameraLookAt': [0, 0, 0],
-        'sharedMemoryForWorkers': false,
-        'dynamicScene': false
-      });
+    let viewer = null;
+    let isLoading = false;
 
-      viewer.addSplatScene(splatUrl, {
-        'splatAlphaRemovalThreshold': 5,
-        'showLoadingUI': false
-      })
-      .then(() => {
-        if (loadingEl) loadingEl.style.display = 'none';
+    function showLoading(msg) {
+      loadingEl.innerHTML = `<div class="spinner"></div><div style="text-align:center;">${msg || 'Loading scene...'}</div>`;
+      loadingEl.style.display = '';
+    }
+
+    function hideLoading() {
+      loadingEl.style.display = 'none';
+    }
+
+    function updateLabel(label) {
+      if (label) {
+        sceneLabelEl.textContent = label;
+        sceneLabelEl.style.display = '';
+      } else {
+        sceneLabelEl.style.display = 'none';
+      }
+    }
+
+    async function initViewer() {
+      try {
+        showLoading('Loading scene...');
+        updateLabel(currentLabel);
+
+        viewer = new GaussianSplats3D.Viewer({
+          'cameraUp': [0, -1, 0],
+          'initialCameraPosition': [0, -2, 6],
+          'initialCameraLookAt': [0, 0, 0],
+          'sharedMemoryForWorkers': false,
+          'dynamicScene': false
+        });
+
+        await viewer.addSplatScene(currentUrl, {
+          'splatAlphaRemovalThreshold': 5,
+          'showLoadingUI': false
+        });
+
+        hideLoading();
+        viewer.start();
+
         // Fade out controls after 6 seconds
         setTimeout(() => {
           if (controlsEl) {
@@ -77,17 +113,64 @@
             setTimeout(() => { controlsEl.style.display = 'none'; }, 1000);
           }
         }, 6000);
-        viewer.start();
-      })
-      .catch(err => {
-        console.error('Failed to load splat scene:', err);
-        if (loadingEl) loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
-      });
-    } catch (err) {
-      console.error('Viewer init failed:', err);
-      if (loadingEl) loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">WebGL not supported.</div>';
+
+      } catch (err) {
+        console.error('Viewer init failed:', err);
+        loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
+      }
     }
+
+    async function loadScene(url, label) {
+      if (isLoading || url === currentUrl) return;
+      isLoading = true;
+
+      try {
+        showLoading('Switching scene...');
+        updateLabel(label || '');
+
+        // Dispose and recreate viewer (simplest way to switch scenes)
+        if (viewer) {
+          viewer.dispose();
+          viewer = null;
+        }
+
+        // Small delay to let cleanup finish
+        await new Promise(r => setTimeout(r, 100));
+
+        viewer = new GaussianSplats3D.Viewer({
+          'cameraUp': [0, -1, 0],
+          'initialCameraPosition': [0, -2, 6],
+          'initialCameraLookAt': [0, 0, 0],
+          'sharedMemoryForWorkers': false,
+          'dynamicScene': false
+        });
+
+        await viewer.addSplatScene(url, {
+          'splatAlphaRemovalThreshold': 5,
+          'showLoadingUI': false
+        });
+
+        currentUrl = url;
+        hideLoading();
+        viewer.start();
+
+      } catch (err) {
+        console.error('Failed to load scene:', err);
+        loadingEl.innerHTML = '<div style="text-align:center;color:#ff6b6b;">Failed to load scene.<br><small style="opacity:0.7;">Check console for details.</small></div>';
+      } finally {
+        isLoading = false;
+      }
+    }
+
+    // Listen for scene switch messages from parent (evogs.html)
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'loadScene') {
+        loadScene(event.data.url, event.data.label);
+      }
+    });
+
+    // Initialize
+    initViewer();
   </script>
 </body>
 </html>
-
