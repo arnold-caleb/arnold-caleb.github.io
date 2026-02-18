@@ -150,27 +150,32 @@
                     title="Interactive 3D Gaussian Splatting Viewer">
             </iframe>
 
-            <!-- Thumbnail Carousel -->
-            <div id="thumb-carousel" style="
-              display:flex; gap:12px; overflow-x:auto; padding:14px 4px 8px;
-              scrollbar-width:thin; scrollbar-color:rgba(0,0,0,0.2) transparent;
-            ">
-              <button class="thumb-card active" data-url="./assets/cut_roasted_beef_t0.splat" data-label="t = 0.00" onclick="switchScene(this)">
-                <img src="./assets/thumbnails/thumb_t0.jpg" alt="t=0.00">
-                <span class="thumb-label">t = 0.00</span>
-              </button>
-              <button class="thumb-card" data-url="./assets/cut_roasted_beef_t25.splat" data-label="t = 0.25" onclick="switchScene(this)">
-                <img src="./assets/thumbnails/thumb_t25.jpg" alt="t=0.25">
-                <span class="thumb-label">t = 0.25</span>
-              </button>
-              <button class="thumb-card" data-url="./assets/cut_roasted_beef_t50.splat" data-label="t = 0.50" onclick="switchScene(this)">
-                <img src="./assets/thumbnails/thumb_t50.jpg" alt="t=0.50">
-                <span class="thumb-label">t = 0.50</span>
-              </button>
-              <button class="thumb-card" data-url="./assets/cut_roasted_beef_t75.splat" data-label="t = 0.75" onclick="switchScene(this)">
-                <img src="./assets/thumbnails/thumb_t75.jpg" alt="t=0.75">
-                <span class="thumb-label">t = 0.75</span>
-              </button>
+            <!-- Thumbnail Carousel with Arrows -->
+            <div class="carousel-wrapper">
+              <button class="carousel-arrow carousel-arrow-left" id="carousel-left" aria-label="Scroll left">&#8249;</button>
+              <div id="thumb-carousel" style="
+                display:flex; gap:12px; overflow-x:auto; padding:14px 4px 8px;
+                scrollbar-width:thin; scrollbar-color:rgba(0,0,0,0.2) transparent;
+                scroll-behavior:smooth;
+              ">
+                <button class="thumb-card active" data-url="./assets/cut_roasted_beef_t0.splat" data-label="t = 0.00" onclick="switchScene(this)">
+                  <img src="./assets/thumbnails/thumb_t0.jpg" alt="t=0.00">
+                  <span class="thumb-label">t = 0.00</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t25.splat" data-label="t = 0.25" onclick="switchScene(this)">
+                  <img src="./assets/thumbnails/thumb_t25.jpg" alt="t=0.25">
+                  <span class="thumb-label">t = 0.25</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t50.splat" data-label="t = 0.50" onclick="switchScene(this)">
+                  <img src="./assets/thumbnails/thumb_t50.jpg" alt="t=0.50">
+                  <span class="thumb-label">t = 0.50</span>
+                </button>
+                <button class="thumb-card" data-url="./assets/cut_roasted_beef_t75.splat" data-label="t = 0.75" onclick="switchScene(this)">
+                  <img src="./assets/thumbnails/thumb_t75.jpg" alt="t=0.75">
+                  <span class="thumb-label">t = 0.75</span>
+                </button>
+              </div>
+              <button class="carousel-arrow carousel-arrow-right" id="carousel-right" aria-label="Scroll right">&#8250;</button>
             </div>
           </div>
           <figcaption style="text-align:center; font-size:13px; color:var(--ink2); margin-top:10px;">
@@ -182,7 +187,7 @@
           .thumb-card {
             flex:0 0 auto; width:140px; cursor:pointer;
             background:var(--bg2, #f5f5f5); border:2px solid transparent;
-            border-radius:8px; overflow:hidden; transition:border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+            border-radius:0; overflow:hidden; transition:border-color 0.2s, transform 0.15s, box-shadow 0.2s;
             padding:0; font-family:inherit; outline:none;
           }
           .thumb-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.12); }
@@ -192,6 +197,28 @@
             display:block; text-align:center; padding:6px 4px; font-size:12px;
             font-weight:600; color:var(--ink, #333); letter-spacing:0.3px;
           }
+          /* Carousel wrapper with arrows */
+          .carousel-wrapper {
+            display:flex; align-items:center; gap:0; position:relative;
+          }
+          .carousel-arrow {
+            flex:0 0 auto; width:32px; height:32px;
+            display:flex; align-items:center; justify-content:center;
+            background:var(--paper, #fff); border:1px solid rgba(0,0,0,0.2);
+            border-radius:50%; cursor:pointer; font-size:20px; line-height:1;
+            color:#333; transition:all 0.2s; z-index:2;
+            padding:0; font-family:inherit;
+          }
+          .carousel-arrow:hover { background:rgba(0,0,0,0.06); transform:scale(1.1); }
+          .carousel-arrow:active { transform:scale(0.95); }
+          .carousel-arrow:disabled { opacity:0.25; cursor:default; transform:none; }
+          .carousel-arrow-left { margin-right:6px; }
+          .carousel-arrow-right { margin-left:6px; }
+          body[data-theme="dark"] .carousel-arrow {
+            background:rgba(18,20,42,0.6); border-color:rgba(154,160,255,0.28); color:var(--ink, #e4e6ff);
+          }
+          body[data-theme="dark"] .carousel-arrow:hover { background:rgba(154,160,255,0.12); }
+
           /* Scrollbar styling for Webkit browsers */
           #thumb-carousel::-webkit-scrollbar { height:6px; }
           #thumb-carousel::-webkit-scrollbar-track { background:transparent; }
@@ -367,6 +394,26 @@
   <script src="js/theme.js"></script>
   <script src="js/navigation.js"></script>
   <script>
+    // Carousel scroll arrows
+    (function() {
+      const carousel = document.getElementById('thumb-carousel');
+      const leftBtn = document.getElementById('carousel-left');
+      const rightBtn = document.getElementById('carousel-right');
+      const scrollAmount = 160;
+
+      function updateArrows() {
+        leftBtn.disabled = carousel.scrollLeft <= 2;
+        rightBtn.disabled = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 2;
+      }
+
+      leftBtn.addEventListener('click', () => { carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); });
+      rightBtn.addEventListener('click', () => { carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
+      carousel.addEventListener('scroll', updateArrows);
+      window.addEventListener('resize', updateArrows);
+      // Initial state
+      setTimeout(updateArrows, 100);
+    })();
+
     function switchScene(btn) {
       // Update active state
       document.querySelectorAll('.thumb-card').forEach(t => t.classList.remove('active'));
