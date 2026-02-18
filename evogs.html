@@ -94,8 +94,15 @@
       </div>
     </aside>
 
+    <!-- Sidebar toggle arrow on the divider -->
+    <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar" title="Toggle sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
     <!-- RIGHT: Main content -->
-    <main class="content">
+    <main class="content" style="border-left:none; padding-left:20px;">
       <!-- Project Header -->
       <section class="section project-header" style="margin-top:0;">
         <h1 style="font-size:32px; margin:0 0 16px 0; font-weight:600; color:#000000; line-height:1.2;">
@@ -289,6 +296,77 @@
             }
           }
 
+          /* ── Sidebar collapse toggle ── */
+          .sidebar-toggle {
+            flex:0 0 auto; align-self:stretch; position:relative;
+            width:20px; min-height:100%;
+            display:flex; align-items:center; justify-content:center;
+            background:transparent; border:none; cursor:pointer;
+            padding:0; margin:0 -10px;
+            z-index:10;
+          }
+          .sidebar-toggle::before {
+            content:''; position:absolute; top:0; bottom:0; left:50%;
+            width:1px; background:#000000;
+          }
+          .sidebar-toggle svg {
+            width:18px; height:18px; color:#333;
+            background:var(--paper, #fff); border:1px solid rgba(0,0,0,0.2);
+            border-radius:50%; padding:3px;
+            position:relative; z-index:2;
+            transition:transform 0.35s ease, color 0.25s;
+          }
+          .sidebar-toggle:hover svg {
+            color:#000; transform:scale(1.15);
+            box-shadow:0 1px 4px rgba(0,0,0,0.12);
+          }
+          /* When collapsed, flip the arrow */
+          .container.sidebar-collapsed .sidebar-toggle svg {
+            transform:rotate(180deg);
+          }
+          .container.sidebar-collapsed .sidebar-toggle:hover svg {
+            transform:rotate(180deg) scale(1.15);
+          }
+          /* Sidebar slide animation */
+          .container .side-content {
+            transition:width 0.35s ease, opacity 0.25s ease, margin 0.35s ease, padding 0.35s ease;
+            overflow:hidden;
+          }
+          .container.sidebar-collapsed .side-content {
+            width:0 !important; flex:0 0 0 !important;
+            opacity:0; margin:0; padding:0;
+            pointer-events:none;
+          }
+          /* Content adjusts smoothly */
+          .container .content {
+            transition:all 0.35s ease;
+          }
+          .container.sidebar-collapsed .content {
+            border-left:none !important;
+            padding-left:10px !important;
+          }
+          /* Also remove the divider line when collapsed */
+          .container.sidebar-collapsed .sidebar-toggle::before {
+            background:transparent;
+          }
+          /* Dark theme */
+          body[data-theme="dark"] .sidebar-toggle::before {
+            background:#2a2e54;
+          }
+          body[data-theme="dark"] .sidebar-toggle svg {
+            color:var(--ink, #e4e6ff);
+            background:var(--paper, #0f1120);
+            border-color:rgba(154,160,255,0.28);
+          }
+          body[data-theme="dark"] .sidebar-toggle:hover svg {
+            color:#fff;
+            box-shadow:0 1px 4px rgba(0,0,0,0.3);
+          }
+          /* Hide toggle on mobile (sidebar stacks vertically) */
+          @media (max-width:1040px) {
+            .sidebar-toggle { display:none !important; }
+          }
+
           /* Dark theme thumbnail adjustments */
           body[data-theme="dark"] .thumb-card {
             background: rgba(18,20,42,0.5);
@@ -397,6 +475,17 @@
   <script src="js/theme.js"></script>
   <script src="js/navigation.js"></script>
   <script>
+    // Sidebar collapse toggle
+    (function() {
+      const toggle = document.getElementById('sidebar-toggle');
+      const container = document.querySelector('.container');
+      if (toggle && container) {
+        toggle.addEventListener('click', () => {
+          container.classList.toggle('sidebar-collapsed');
+        });
+      }
+    })();
+
     // Carousel scroll arrows
     (function() {
       const carousel = document.getElementById('thumb-carousel');
