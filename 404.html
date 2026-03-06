@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="./assets/profilepic.jpg">
+  <title>Page Not Found</title>
+  <script>
+    (function() {
+      var path = window.location.pathname.replace(/\/$/, '');
+      if (path === '/evogs' || path === 'evogs') {
+        window.location.replace('/evogs.html');
+        return;
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="container" style="max-width:600px; margin:80px auto; padding:24px;">
+    <h1 style="font-size:24px; margin-bottom:16px;">Page not found</h1>
+    <p class="paragraph">The page you're looking for doesn't exist.</p>
+    <p class="paragraph"><a href="index.html" class="navlink">← Back to Home</a></p>
+  </div>
+</body>
+</html>
